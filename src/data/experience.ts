@@ -13,11 +13,11 @@ export const experienceTimeline: TimelineItem[] = [
   {
     id: "learned-web-dev",
     year: "2023",
-    title: "Full-Stack Web Development",
-    roleOrContext: "Modern Frontend & Backend Systems",
-    description: "Mastered the JavaScript/TypeScript ecosystem, modern React, Tailwind CSS, Express backends, RESTful API design, and database integration with MongoDB and SQL.",
+    title: "Web & Frontend Development Foundations",
+    roleOrContext: "Responsive UI & Backend Systems",
+    description: "Built strong foundations in HTML5, CSS3, Bootstrap grid layouts, Java programming, RESTful API design, and relational SQL database integrations.",
     icon: "Layout",
-    skills: ["JavaScript", "TypeScript", "React", "Node.js", "Express", "MongoDB", "Tailwind CSS"]
+    skills: ["HTML5", "CSS3", "Bootstrap", "Java", "SQL", "REST APIs"]
   },
   {
     id: "ai-ml-journey",
@@ -42,9 +42,9 @@ export const experienceTimeline: TimelineItem[] = [
     year: "2025 - 2026",
     title: "Industry Certifications & Advanced Cloud Systems",
     roleOrContext: "Continuous Mastery & Professional Growth",
-    description: "Earned industry credentials in AI, cloud architecture, and modern DevOps. Implemented CI/CD pipelines, Docker containerization, and scalable cloud deployments.",
+    description: "Earned industry credentials in AI, cloud systems, and database engineering. Implemented resilient cloud architectures on AWS and optimized relational SQL database workflows.",
     icon: "Award",
-    skills: ["Docker", "CI/CD", "AWS", "GitHub Actions", "System Design", "Cloud Deployment"]
+    skills: ["AWS", "Cloud Services", "SQL", "PostgreSQL", "System Design", "Cloud Deployment"]
   },
   {
     id: "present-future",

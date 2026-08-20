@@ -10,10 +10,12 @@ import {
   CheckCircle2,
   Cpu,
   UserCheck,
-  TrendingUp,
+  MapPin,
+  Briefcase,
 } from 'lucide-react';
 import { SectionHeading } from '../components/SectionHeading';
 import { profileData } from '../data/profile';
+import { MotionProfilePhoto } from '../components/MotionProfilePhoto';
 
 const iconMap: Record<string, React.ElementType> = {
   Brain,
@@ -37,14 +39,43 @@ export const AboutSection: React.FC = () => {
           subtitle="A passionate synthesis of Machine Learning, modern web engineering, and product design."
         />
 
-        {/* Bio & Intro Card */}
+        {/* Bio, Motion Photo & Stats Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16 items-stretch">
+          {/* Motion Photo Card in About Section */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="lg:col-span-4 rounded-3xl bg-white/5 border border-white/10 p-6 backdrop-blur-md shadow-2xl flex flex-col items-center justify-center text-center relative overflow-hidden"
+          >
+            <div className="w-full flex justify-center py-2">
+              <MotionProfilePhoto variant="about" showBadges={false} />
+            </div>
+
+            <div className="mt-4 w-full text-center">
+              <h4 className="text-base font-bold text-white font-display">{profileData.name}</h4>
+              <p className="text-xs font-mono text-indigo-400 mt-0.5">{profileData.headline}</p>
+              
+              <div className="flex items-center justify-center gap-4 mt-3 pt-3 border-t border-white/10 text-xs font-mono text-gray-400">
+                <span className="flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>{profileData.location}</span>
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1 text-emerald-400">
+                  <Briefcase className="w-3.5 h-3.5" />
+                  <span>Open for Roles</span>
+                </span>
+              </div>
+            </div>
+          </motion.div>
+
           {/* Main Story Panel */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="lg:col-span-7 rounded-3xl bg-white/5 border border-white/10 p-8 sm:p-10 backdrop-blur-md shadow-2xl flex flex-col justify-between"
+            className="lg:col-span-8 rounded-3xl bg-white/5 border border-white/10 p-8 sm:p-10 backdrop-blur-md shadow-2xl flex flex-col justify-between"
           >
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-4 backdrop-blur-sm shadow-sm">
@@ -56,57 +87,40 @@ export const AboutSection: React.FC = () => {
                 Turning complex algorithmic ideas into intuitive, high-impact digital experiences.
               </h3>
 
-              <p className="text-gray-300 text-base leading-relaxed mb-6 font-normal">
+              <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6 font-normal">
                 {profileData.bio}
               </p>
 
-              <div className="space-y-3 text-sm text-gray-300">
+              <div className="space-y-3 text-xs sm:text-sm text-gray-300">
                 <div className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-1" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                   <span>Dedicated to building reliable, high-throughput AI systems with clean TypeScript and Python architectures.</span>
                 </div>
                 <div className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-1" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                   <span>Passionate about seamless user experience, responsive layout ergonomics, and accessible developer tooling.</span>
                 </div>
                 <div className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-1" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                   <span>Constantly exploring next-gen foundation models, RAG vector retrieval, and automated cloud workflows.</span>
                 </div>
               </div>
             </div>
 
-            <div className="pt-6 mt-6 border-t border-white/10 flex flex-wrap items-center gap-4 text-xs font-mono text-gray-400">
-              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Status: Open for Hiring</span>
-              <span>•</span>
-              <span>Focus: AI/ML & Full-Stack Systems</span>
-            </div>
-          </motion.div>
-
-          {/* Key Stats Counter Grid */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="lg:col-span-5 grid grid-cols-2 gap-4"
-          >
-            {(profileData?.stats || []).map((stat, idx) => (
-              <div
-                key={idx}
-                className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md flex flex-col justify-between hover:border-white/20 transition-all shadow-xl"
-              >
-                <div>
-                  <span className="text-3xl sm:text-4xl font-extrabold font-display bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-300 to-cyan-400">
+            {/* Key Stats Counter Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 mt-6 border-t border-white/10">
+              {(profileData?.stats || []).map((stat, idx) => (
+                <div
+                  key={idx}
+                  className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between"
+                >
+                  <span className="text-xl sm:text-2xl font-extrabold font-display bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-300 to-cyan-400">
                     {stat.value}
                   </span>
-                  <h4 className="text-sm font-bold text-white mt-1.5">{stat.label}</h4>
+                  <h4 className="text-xs font-bold text-white mt-1 leading-tight">{stat.label}</h4>
                 </div>
-                <p className="text-xs text-gray-400 mt-2 font-normal leading-relaxed">
-                  {stat.description}
-                </p>
-              </div>
-            ))}
+              ))}
+            </div>
           </motion.div>
         </div>
 

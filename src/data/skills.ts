@@ -9,20 +9,20 @@ export const skillCategories: SkillCategory[] = [
       {
         name: "Python",
         icon: "Terminal",
-        description: "Primary language for AI/ML, data pipelines, PyTorch, NumPy, Pandas, FastAPI, and scripting.",
+        description: "Primary advanced language for AI/ML engineering, PyTorch, data science pipelines, FastAPI, algorithms, and backend scripting.",
         level: "Advanced"
       },
       {
         name: "Java",
         icon: "Coffee",
-        description: "Object-oriented software architecture, core DSA, backend systems, and enterprise design patterns.",
+        description: "Object-oriented programming fundamentals, core Data Structures & Algorithms, and application architecture.",
         level: "Proficient"
       },
       {
-        name: "JavaScript / TypeScript",
+        name: "JavaScript",
         icon: "FileCode",
-        description: "Modern ES6+, type-safe application logic, asynchronous runtime, and full-stack integration.",
-        level: "Advanced"
+        description: "Web scripting basics, DOM event handling, dynamic UI rendering, and client-server communication.",
+        level: "Proficient"
       }
     ]
   },
@@ -69,28 +69,28 @@ export const skillCategories: SkillCategory[] = [
     icon: "Layout",
     skills: [
       {
-        name: "React",
-        icon: "Atom",
-        description: "Modern component architecture, custom hooks, state management, memoization, and SSR/CSR.",
-        level: "Advanced"
-      },
-      {
-        name: "Tailwind CSS",
-        icon: "Palette",
-        description: "Utility-first responsive layouts, dynamic theme variables, dark mode styling, and design systems.",
-        level: "Advanced"
-      },
-      {
-        name: "HTML5 & Semantic Markup",
+        name: "HTML & HTML5",
         icon: "Globe",
-        description: "Accessible WCAG AA standards, structured SEO data, SEO-friendly layout hierarchy, and canvas API.",
+        description: "Semantic web markup, accessible structure, forms, SEO-friendly layout hierarchy, and modern web standards.",
         level: "Advanced"
       },
       {
-        name: "CSS3 & Animations",
+        name: "CSS & CSS3",
         icon: "Flame",
-        description: "Hardware-accelerated transforms, Framer Motion integration, glassmorphism, responsive grid & flexbox.",
+        description: "Responsive layouts, Flexbox, CSS variables, transitions, animations, media queries, and dark mode themes.",
         level: "Advanced"
+      },
+      {
+        name: "Bootstrap & Grid System",
+        icon: "Layers",
+        description: "12-column responsive grid layout system, breakpoint management, responsive containers, flex utilities, and UI components.",
+        level: "Advanced"
+      },
+      {
+        name: "Java / JS Web Integration",
+        icon: "Code2",
+        description: "Dynamic DOM manipulation, client-side interactions, UI state handling, and interactive frontend features.",
+        level: "Proficient"
       }
     ]
   },
@@ -100,9 +100,9 @@ export const skillCategories: SkillCategory[] = [
     icon: "Server",
     skills: [
       {
-        name: "Node.js & Express",
+        name: "Python FastAPI / Node.js",
         icon: "ServerCog",
-        description: "High-throughput asynchronous servers, middleware pipelines, error handlers, and RESTful routing.",
+        description: "High-throughput servers, async endpoint routing, middleware pipelines, and API controller architectures.",
         level: "Advanced"
       },
       {
@@ -114,64 +114,64 @@ export const skillCategories: SkillCategory[] = [
       {
         name: "Authentication & Security",
         icon: "ShieldCheck",
-        description: "JWT, OAuth 2.0 flows, session cookies, bcrypt password hashing, CORS policies, and CSRF protection.",
+        description: "JWT, OAuth 2.0 flows, session cookies, password hashing, CORS policies, and secure API keys.",
         level: "Proficient"
       },
       {
-        name: "Database Integration",
+        name: "SQL Database Integration",
         icon: "Database",
-        description: "ORM/ODM modeling (Mongoose, Prisma, Drizzle), connection pooling, data sanitation, and indexing.",
+        description: "Relational ORM/SQL modeling, connection pooling, query optimization, data validation, and migrations.",
         level: "Advanced"
       }
     ]
   },
   {
     id: "databases",
-    name: "Databases & Storage",
+    name: "Databases & SQL",
     icon: "DatabaseZap",
     skills: [
       {
-        name: "MongoDB",
-        icon: "Leaf",
-        description: "Document schema modeling, aggregation pipelines, replica indexing, and Atlas cloud deployment.",
+        name: "SQL (PostgreSQL / MySQL)",
+        icon: "Table2",
+        description: "Relational database schema normalization, complex multi-table joins, indexing, ACID transactions, and query optimization.",
         level: "Advanced"
       },
       {
-        name: "SQL (PostgreSQL / MySQL)",
-        icon: "Table2",
-        description: "Relational database schema normalization, complex joins, indexing, query optimization, and transactions.",
+        name: "Cloud SQL & Database Design",
+        icon: "Database",
+        description: "Managed cloud relational databases, connection pooling, migrations, data integrity constraints, and query analysis.",
+        level: "Advanced"
+      },
+      {
+        name: "SQLite & Relational Storage",
+        icon: "FileCode",
+        description: "Embedded SQL database engines, relational table queries, transactional persistence, and data modeling.",
         level: "Advanced"
       }
     ]
   },
   {
-    id: "cloud-devops",
-    name: "Cloud & DevOps",
+    id: "cloud-platforms",
+    name: "Cloud Platforms & Tools",
     icon: "CloudLightning",
     skills: [
       {
-        name: "AWS",
+        name: "AWS (Amazon Web Services)",
         icon: "Cloud",
-        description: "EC2 instances, S3 storage buckets, Lambda serverless functions, and CloudWatch logging.",
+        description: "EC2 compute instances, S3 object storage buckets, Lambda serverless functions, and CloudWatch monitoring.",
         level: "Proficient"
       },
       {
-        name: "Docker",
-        icon: "Box",
-        description: "Containerization, multi-stage Dockerfiles, microservice isolation, and container runtime orchestration.",
+        name: "Cloud Hosting & Deployment",
+        icon: "Globe",
+        description: "Deploying scalable web applications on modern cloud infrastructure, serverless runtimes, and Cloud Run.",
         level: "Proficient"
       },
       {
         name: "Git & GitHub",
         icon: "GitBranch",
-        description: "Branching strategies, pull request reviews, rebase workflows, semantic versioning, and open-source hygiene.",
+        description: "Version control, branching strategies, collaborative code reviews, rebase workflows, and repository management.",
         level: "Advanced"
-      },
-      {
-        name: "CI/CD & GitHub Actions",
-        icon: "Cog",
-        description: "Automated test suites, continuous deployment triggers, linting matrix, and Docker build workflows.",
-        level: "Proficient"
       }
     ]
   }

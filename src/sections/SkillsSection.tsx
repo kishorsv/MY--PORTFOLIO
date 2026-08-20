@@ -40,7 +40,7 @@ export const SkillsSection: React.FC = () => {
         <SectionHeading
           badge="Technical Skills"
           title="Full-Stack & AI Toolkit"
-          subtitle="A comprehensive overview of programming languages, machine learning frameworks, databases, and DevOps practices."
+          subtitle="A comprehensive overview of programming languages, machine learning frameworks, SQL databases, and cloud platforms."
         />
 
         {/* Filter and Search Bar */}

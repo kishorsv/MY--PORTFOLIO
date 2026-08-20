@@ -88,8 +88,16 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="flex items-center gap-3 group text-left focus:outline-none cursor-pointer"
           aria-label="Kishor S V Home"
         >
-          <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center font-bold text-lg text-white shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-            K
+          <div className="relative">
+            <div className="w-10 h-10 rounded-xl overflow-hidden p-0.5 bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 shadow-md group-hover:scale-105 transition-transform">
+              <img
+                src={profileData.avatarUrl || profileData.photoUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80"}
+                alt={profileData.name}
+                className="w-full h-full object-cover rounded-[10px]"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-[#020204] rounded-full" />
           </div>
           <div>
             <span className="font-display font-semibold text-lg text-white tracking-tight group-hover:text-indigo-300 transition-colors">

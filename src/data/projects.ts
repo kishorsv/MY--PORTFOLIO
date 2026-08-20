@@ -25,7 +25,7 @@ export const projectsData: ProjectItem[] = [
     techStack: [
       { category: "Frontend", items: ["React", "TypeScript", "Tailwind CSS", "Lucide Icons", "Framer Motion"] },
       { category: "Backend & AI", items: ["FastAPI", "Python", "Google Gemini API", "LangChain", "Pydantic"] },
-      { category: "Storage & Infra", items: ["MongoDB", "Redis Cache", "Docker", "AWS EC2"] }
+      { category: "Storage & Infra", items: ["PostgreSQL", "Redis Cache", "Cloud SQL", "AWS EC2"] }
     ],
     challenges: "Enforcing strict guardrails to prevent diagnostic claims or unsafe medical prescriptions while maintaining a natural, helpful, and reassuring conversational tone.",
     futureImprovements: [
@@ -40,7 +40,7 @@ export const projectsData: ProjectItem[] = [
     tagline: "Dynamic AI-driven workout planner, form analysis insights, and nutritional coaching platform.",
     description: "A comprehensive fitness companion that crafts personalized workout routines, adapts volume based on recovery scores, and tracks caloric goals using intelligent nutritional estimation.",
     category: "AI",
-    tags: ["React", "Node.js", "Express", "Computer Vision", "Tailwind CSS", "MongoDB"],
+    tags: ["React", "Node.js", "Express", "Computer Vision", "Tailwind CSS", "PostgreSQL"],
     image: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1200&auto=format&fit=crop",
     githubUrl: "https://github.com/kishorsv",
     liveUrl: "https://kishorsv.lovable.app",
@@ -58,7 +58,7 @@ export const projectsData: ProjectItem[] = [
     techStack: [
       { category: "Frontend", items: ["React", "TypeScript", "Tailwind CSS", "Recharts", "Framer Motion"] },
       { category: "Backend", items: ["Node.js", "Express", "JWT Authentication", "REST APIs"] },
-      { category: "Database & AI", items: ["MongoDB Atlas", "Gemini 3.7 Flash API", "Mongoose"] }
+      { category: "Database & AI", items: ["PostgreSQL", "Cloud SQL", "Gemini 3.7 Flash API"] }
     ],
     challenges: "Designing an intuitive multi-step workout builder that seamlessly translates complex muscle recovery algorithms into simple, actionable daily routine cards.",
     futureImprovements: [
@@ -154,7 +154,7 @@ export const projectsData: ProjectItem[] = [
     techStack: [
       { category: "Frontend", items: ["React", "TypeScript", "Tailwind CSS", "Framer Motion", "Lucide Icons"] },
       { category: "State & Audio", items: ["Web Audio API", "Custom React Hooks", "Zustand"] },
-      { category: "Deployment", items: ["Vite", "Cloud Run", "CI/CD"] }
+      { category: "Deployment", items: ["Vite", "Cloud Run", "AWS S3"] }
     ],
     challenges: "Delivering a 60 FPS silky smooth experience with high-resolution visual assets on both mobile touch devices and ultra-wide desktop monitors.",
     futureImprovements: [

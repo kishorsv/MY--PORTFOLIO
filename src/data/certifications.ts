@@ -47,14 +47,14 @@ export const certificationsData: CertificateItem[] = [
   },
   {
     id: "cert-git-github",
-    title: "Git, GitHub & Modern CI/CD Automation",
+    title: "Git & GitHub Version Control Collaboration",
     issuer: "GitHub / Linux Foundation",
     issueDate: "2024",
     credentialId: "GH-GIT-339108",
     verificationUrl: "https://github.com",
     image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?q=80&w=800&auto=format&fit=crop",
     category: "Git/GitHub",
-    skills: ["Git", "GitHub Actions", "CI/CD", "Branch Management", "Release Automation"]
+    skills: ["Git", "GitHub", "Branch Management", "Version Control", "Repository Hygiene"]
   },
   {
     id: "cert-python-data-science",

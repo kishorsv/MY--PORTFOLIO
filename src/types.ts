@@ -14,6 +14,8 @@ export interface StatItem {
 
 export interface ProfileData {
   name: string;
+  avatarUrl?: string;
+  photoUrl?: string;
   titles: string[];
   headline: string;
   bio: string;

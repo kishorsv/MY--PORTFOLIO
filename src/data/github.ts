@@ -8,10 +8,10 @@ export const githubData: GithubStatsData = {
   totalStars: 56,
   totalContributions: 340,
   topLanguages: [
-    { name: "Python", percentage: 42, color: "#3572A5" },
-    { name: "TypeScript / JavaScript", percentage: 38, color: "#3178C6" },
-    { name: "HTML & CSS", percentage: 12, color: "#e34c26" },
-    { name: "Java / SQL", percentage: 8, color: "#b07219" }
+    { name: "Python", percentage: 55, color: "#3572A5" },
+    { name: "HTML & CSS", percentage: 20, color: "#e34c26" },
+    { name: "SQL & Cloud", percentage: 15, color: "#336791" },
+    { name: "Java", percentage: 10, color: "#b07219" }
   ],
   featuredRepos: [
     {
@@ -21,16 +21,16 @@ export const githubData: GithubStatsData = {
       stars: 24,
       forks: 7,
       url: "https://github.com/kishorsv",
-      topics: ["gemini-ai", "fastapi", "react", "health-ai", "rag"]
+      topics: ["gemini-ai", "fastapi", "python", "health-ai", "sql"]
     },
     {
       name: "ai-fitness-platform",
       description: "Smart workout routine generator, progressive overload analytics, and nutritional macro tracker.",
-      language: "TypeScript",
+      language: "Python / Web",
       stars: 18,
       forks: 5,
       url: "https://github.com/kishorsv",
-      topics: ["react", "nodejs", "fitness-app", "express", "mongodb"]
+      topics: ["python", "bootstrap", "fitness-app", "sql", "html-css"]
     },
     {
       name: "bmw-car-showroom-interactive",

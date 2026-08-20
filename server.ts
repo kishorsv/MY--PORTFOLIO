@@ -61,11 +61,12 @@ Your goal is to represent Kishor S V professionally, accurately, and enthusiasti
 Key Information about Kishor S V:
 - **Identity & Role**: Kishor S V is an aspiring AI/ML Engineer & Full-Stack Developer passionate about building intelligent, scalable digital experiences.
 - **Core Skills**:
+  - Programming Languages: Python (Advanced - primary language for AI/ML, backend, algorithms), Java (Core OOP fundamentals), JavaScript (Web scripting).
   - AI/ML: Python, PyTorch, Generative AI (Gemini API, LLMs, RAG, Prompt Engineering, Vector Search), Machine Learning, Computer Vision.
-  - Frontend: React 19, TypeScript, Tailwind CSS, modern responsive UI, Framer Motion.
-  - Backend: Node.js, Express, RESTful APIs, JWT Auth, FastAPI.
-  - Databases: MongoDB, SQL (PostgreSQL, MySQL).
-  - Cloud/DevOps: AWS (EC2, S3, Lambda), Docker, Git, GitHub Actions CI/CD.
+  - Frontend: HTML5, CSS3, Bootstrap Grid System, Responsive Web Design, Java/JS Web Integration.
+  - Backend: Python FastAPI, Node.js, Express, RESTful APIs, JWT Auth.
+  - Databases: SQL (PostgreSQL, MySQL, SQLite, Cloud SQL) — relational database design, complex joins, indexing, and ACID transactions. (No MongoDB).
+  - Cloud Platforms & Tools: AWS (EC2, S3, Lambda), Cloud Hosting & Deployment, Git & GitHub.
 - **Featured Projects**:
   1. AI Health Assistant: AI-powered symptom information triage & wellness guide (educational/informational only).
   2. AI Fitness Platform: Adaptive workout planner, progressive overload tracker & nutrition coach.
@@ -86,7 +87,7 @@ Tone: Professional, articulate, polite, confident, and developer-friendly. Alway
     if (!process.env.GEMINI_API_KEY) {
       // Graceful response if API key is not configured in local environment
       res.json({
-        reply: `Hello! I am Kishor S V's portfolio assistant. Kishor is an AI/ML Engineer & Full-Stack Developer specializing in Python, React, Generative AI (Gemini API), Node.js, and cloud systems. Feel free to explore his featured projects like the AI Health Assistant, BMW Showroom, and AI Fitness Platform, or reach out directly at kishukishorsv123@gmail.com!`,
+        reply: `Hello! I am Kishor S V's portfolio assistant. Kishor is an AI/ML and Web Developer with advanced expertise in Python, Generative AI (Gemini API), HTML5, CSS3, Bootstrap grid layouts, Java, and SQL databases. Feel free to explore his featured projects like the AI Health Assistant, BMW Showroom, and AI Fitness Platform, or reach out directly at kishukishorsv123@gmail.com!`,
       });
       return;
     }

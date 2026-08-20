@@ -2,6 +2,8 @@ import { ProfileData } from '../types';
 
 export const profileData: ProfileData = {
   name: "Kishor S V",
+  photoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1000&q=85",
+  avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
   titles: [
     "AI/ML Engineer",
     "Full-Stack Developer",
@@ -58,8 +60,8 @@ export const profileData: ProfileData = {
       icon: "Sparkles"
     },
     {
-      title: "Cloud & Scalable DevOps",
-      description: "Containerizing services with Docker, setting up automated CI/CD workflows via GitHub Actions, and deploying resilient cloud services on AWS & Cloud Run.",
+      title: "Cloud & Database Architecture",
+      description: "Deploying and managing scalable cloud services on AWS and modern cloud platforms, combined with optimized SQL schema designs and secure cloud endpoints.",
       icon: "Cloud"
     },
     {
