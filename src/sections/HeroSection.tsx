@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import {
   ArrowRight,
   FileText,
@@ -28,19 +28,49 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onOpenAiChat,
   isDarkMode = true,
 }) => {
+  const heroRef = useRef<HTMLElement>(null);
+  const portraitAnchorRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isInsideHero, setIsInsideHero] = useState<boolean>(false);
+
+  // Motion values for ultra-smooth spring-based cursor tracking
+  const rawMouseX = useMotionValue(0);
+  const rawMouseY = useMotionValue(0);
+
+  // Springs for silky backlight movement
+  const springConfig = { stiffness: 140, damping: 20, mass: 0.6 };
+  const smoothMouseX = useSpring(rawMouseX, springConfig);
+  const smoothMouseY = useSpring(rawMouseY, springConfig);
+
+  // Responsive transforms for backlight shift behind portrait
+  const backlightX = useTransform(smoothMouseX, [-600, 600], [-80, 80]);
+  const backlightY = useTransform(smoothMouseY, [-600, 600], [-70, 70]);
+  const backlightScale = useTransform(smoothMouseX, [-600, 0, 600], [1.15, 1.0, 1.2]);
+  const backlightRotate = useTransform(smoothMouseX, [-600, 600], [-25, 25]);
+
+  // Secondary dynamic rim flare offset
+  const rimGlowX = useTransform(smoothMouseX, [-600, 600], [-110, 110]);
+  const rimGlowY = useTransform(smoothMouseY, [-600, 600], [-90, 90]);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleGlobalMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: e.clientX,
         y: e.clientY,
       });
+
+      if (portraitAnchorRef.current) {
+        const rect = portraitAnchorRef.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        rawMouseX.set(e.clientX - centerX);
+        rawMouseY.set(e.clientY - centerY);
+      }
     };
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+    window.addEventListener('mousemove', handleGlobalMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleGlobalMouseMove);
+  }, [rawMouseX, rawMouseY]);
 
   const scrollToProjects = () => {
     document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
@@ -53,13 +83,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   return (
     <section
       id="hero"
+      ref={heroRef}
+      onMouseEnter={() => setIsInsideHero(true)}
+      onMouseLeave={() => setIsInsideHero(false)}
       className="relative min-h-[90vh] flex items-center justify-center pt-28 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-transparent"
     >
-      {/* Dynamic Mouse Following Radial Glow */}
+      {/* Dynamic Mouse Following Radial Ambient Canvas Glow */}
       <div
-        className="pointer-events-none absolute -inset-px opacity-30 transition-opacity duration-500 hidden md:block"
+        className="pointer-events-none absolute -inset-px opacity-35 transition-opacity duration-500 hidden md:block"
         style={{
-          background: `radial-gradient(650px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(99, 102, 241, 0.12), transparent 80%)`,
+          background: `radial-gradient(750px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.05) 45%, transparent 75%)`,
         }}
       />
 
@@ -234,16 +267,62 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </motion.div>
             </div>
 
-            {/* Right Column: 3D Motion Professional Profile with Ambient Backlight Anchor */}
-            <div className="lg:col-span-5 flex justify-center items-center mt-6 lg:mt-0 relative">
-              {/* Specialized Ambient Volumetric Backlight Spot */}
-              <div className="absolute -inset-10 bg-gradient-to-tr from-indigo-500/20 via-purple-500/20 to-cyan-500/20 rounded-full blur-3xl opacity-70 pointer-events-none -z-10" />
+            {/* Right Column: 3D Motion Professional Profile with Mouse-Reactive Backlight */}
+            <div
+              ref={portraitAnchorRef}
+              className="lg:col-span-5 flex justify-center items-center mt-6 lg:mt-0 relative"
+            >
+              {/* ======================================================== */}
+              {/* 🌟 MOUSE-REACTIVE AMBIENT GLOW BACKLIGHT ENGINE 🌟 */}
+              {/* ======================================================== */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10 overflow-visible">
+                {/* 1. Primary Dynamic Volumetric Light Source (Follows cursor behind the portrait) */}
+                <motion.div
+                  style={{
+                    x: backlightX,
+                    y: backlightY,
+                    scale: backlightScale,
+                    rotate: backlightRotate,
+                  }}
+                  className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full blur-[70px] opacity-75 sm:opacity-85 mix-blend-screen transition-opacity duration-300"
+                >
+                  <div className="w-full h-full rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-cyan-400 opacity-90 animate-pulse" />
+                </motion.div>
 
+                {/* 2. Secondary High-Intensity Directional Rim Light Source */}
+                <motion.div
+                  style={{
+                    x: rimGlowX,
+                    y: rimGlowY,
+                  }}
+                  className="absolute w-56 h-56 sm:w-72 sm:h-72 rounded-full blur-[50px] opacity-60 sm:opacity-70 mix-blend-color-dodge pointer-events-none"
+                >
+                  <div className="w-full h-full rounded-full bg-radial from-cyan-300 via-indigo-500/40 to-transparent" />
+                </motion.div>
+
+                {/* 3. Deep Atmospheric Ambient Base Glow (Cybernetic aura anchor) */}
+                <div className="absolute -inset-12 bg-gradient-to-tr from-indigo-900/40 via-purple-900/30 to-cyan-900/30 rounded-full blur-3xl opacity-80 pointer-events-none" />
+
+                {/* 4. Subtle Shimmering Outer Ring Beam */}
+                <motion.div
+                  animate={{
+                    rotate: [0, 360],
+                    scale: [0.98, 1.04, 0.98],
+                  }}
+                  transition={{
+                    rotate: { duration: 24, repeat: Infinity, ease: 'linear' },
+                    scale: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
+                  }}
+                  className="absolute w-80 h-80 sm:w-[420px] sm:h-[420px] rounded-full border border-indigo-500/20 blur-xl pointer-events-none opacity-40"
+                />
+              </div>
+
+              {/* Portrait Container */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
-                className="w-full flex justify-center"
+                className="w-full flex justify-center relative z-10"
               >
                 <ProfessionalProfile isDarkMode={isDarkMode} />
               </motion.div>
@@ -254,4 +333,5 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     </section>
   );
 };
+
 
