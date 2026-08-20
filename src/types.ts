@@ -94,12 +94,15 @@ export interface CertificateItem {
   id: string;
   title: string;
   issuer: string;
+  date?: string;
   issueDate: string;
   completedDate?: string;
-  credentialId: string;
+  credentialId?: string;
   verificationUrl?: string;
   credentialUrl?: string;
+  linkedinPostUrl?: string;
   linkedinUrl?: string;
+  certificateImage?: string;
   image: string;
   pdfUrl?: string;
   category: 'AI & Generative AI' | 'Web Development' | 'Data Science' | 'Data Analysis' | 'GitHub & Development' | 'Achievements' | string;

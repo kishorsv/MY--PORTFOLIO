@@ -20,9 +20,14 @@ import { ProfessionalProfile } from '../components/ProfessionalProfile';
 interface HeroSectionProps {
   onOpenResume: () => void;
   onOpenAiChat: () => void;
+  isDarkMode?: boolean;
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenResume, onOpenAiChat }) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({
+  onOpenResume,
+  onOpenAiChat,
+  isDarkMode = true,
+}) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -240,7 +245,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenResume, onOpenAi
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="w-full flex justify-center"
               >
-                <ProfessionalProfile />
+                <ProfessionalProfile isDarkMode={isDarkMode} />
               </motion.div>
             </div>
           </div>

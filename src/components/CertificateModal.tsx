@@ -6,7 +6,6 @@ import {
   Minimize2,
   ZoomIn,
   ZoomOut,
-  RotateCcw,
   ChevronLeft,
   ChevronRight,
   Calendar,
@@ -26,7 +25,8 @@ import {
   ExternalLink,
   AlertCircle,
   RefreshCw,
-  FileText
+  FileText,
+  Linkedin
 } from 'lucide-react';
 import { CertificateItem } from '../types';
 
@@ -48,7 +48,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   const [copied, setCopied] = useState<boolean>(false);
   const [imageLoading, setImageLoading] = useState<boolean>(true);
   const [imageError, setImageError] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'image' | 'pdf' | 'details'>('image');
+  const [activeTab, setActiveTab] = useState<'image' | 'pdf'>('image');
   const modalContainerRef = useRef<HTMLDivElement>(null);
   const touchStartXRef = useRef<number | null>(null);
 
@@ -89,8 +89,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   if (!cert) return null;
 
   const currentIndex = certificatesList.findIndex((c) => c.id === cert.id);
-  const hasPrev = certificatesList.length > 1;
-  const hasNext = certificatesList.length > 1;
+  const hasMultiple = certificatesList.length > 1;
 
   const handlePrev = () => {
     if (!onNavigate || certificatesList.length <= 1) return;
@@ -121,7 +120,10 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   };
 
   const handleCopy = () => {
-    const text = `${cert.title} issued to Kishor S V by ${cert.issuer} (${cert.completedDate || cert.issueDate})`;
+    const postLink = cert.linkedinPostUrl || cert.linkedinUrl || '';
+    const text = `${cert.title} issued to Kishor S V by ${cert.issuer} (${cert.date || cert.completedDate || cert.issueDate})${
+      postLink ? `\nLinkedIn Post: ${postLink}` : ''
+    }`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -151,8 +153,15 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
     touchStartXRef.current = null;
   };
 
-  const isCommunity = cert.type === 'Community Achievement / Badge';
-  const verifyLink = cert.verificationUrl || cert.credentialUrl;
+  const isCommunityBadge =
+    cert.type === 'Community Achievement / Badge' ||
+    cert.id === 'kaggle-community' ||
+    cert.issuer.includes('Kaggle');
+
+  const certificateImage = cert.certificateImage || cert.image;
+  const linkedinPostUrl = cert.linkedinPostUrl || cert.linkedinUrl;
+  const formattedDate = cert.date || cert.completedDate || cert.issueDate;
+  const officialVerifyUrl = cert.credentialUrl || cert.verificationUrl;
 
   const getIssuerIcon = () => {
     if (cert.issuer.includes('Anthropic')) return Bot;
@@ -186,7 +195,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             isFullscreen ? 'max-w-[98vw] h-[96vh] my-1' : 'max-w-5xl my-4 max-h-[92vh]'
           }`}
         >
-          {/* Top Header & Toolbar */}
+          {/* Top Header & Navigation Toolbar */}
           <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 py-3.5 border-b border-white/10 bg-neutral-900/90 backdrop-blur-md sticky top-0 z-30">
             <div className="flex items-center gap-3 min-w-0">
               <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shrink-0">
@@ -199,8 +208,8 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 <div className="flex items-center gap-2 text-[11px] font-mono text-gray-400">
                   <span>{cert.issuer}</span>
                   <span>•</span>
-                  <span>{cert.completedDate || cert.issueDate}</span>
-                  {certificatesList.length > 1 && (
+                  <span>{formattedDate}</span>
+                  {hasMultiple && (
                     <>
                       <span>•</span>
                       <span className="text-indigo-400 font-semibold">
@@ -212,15 +221,15 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               </div>
             </div>
 
-            {/* Viewer Navigation & Utility Controls */}
+            {/* Viewer Controls */}
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               {/* Previous / Next Buttons */}
-              {certificatesList.length > 1 && (
+              {hasMultiple && (
                 <div className="flex items-center bg-white/5 border border-white/10 rounded-xl p-0.5">
                   <button
                     type="button"
                     onClick={handlePrev}
-                    className="p-1.5 sm:p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                    className="p-1.5 sm:p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                     title="Previous Certificate (Left Arrow)"
                   >
                     <ChevronLeft className="w-4 h-4" />
@@ -228,7 +237,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="p-1.5 sm:p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                    className="p-1.5 sm:p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                     title="Next Certificate (Right Arrow)"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -241,7 +250,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 <button
                   type="button"
                   onClick={handleZoomOut}
-                  className="p-1.5 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                  className="p-1.5 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                   title="Zoom Out (-)"
                 >
                   <ZoomOut className="w-3.5 h-3.5" />
@@ -249,7 +258,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 <button
                   type="button"
                   onClick={handleZoomReset}
-                  className="px-2 py-1 text-[11px] font-mono text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                  className="px-2 py-1 text-[11px] font-mono text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors cursor-pointer"
                   title="Reset Zoom (0)"
                 >
                   {Math.round(zoomLevel * 100)}%
@@ -257,19 +266,19 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 <button
                   type="button"
                   onClick={handleZoomIn}
-                  className="p-1.5 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                  className="p-1.5 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                   title="Zoom In (+)"
                 >
                   <ZoomIn className="w-3.5 h-3.5" />
                 </button>
               </div>
 
-              {/* Copy Details */}
+              {/* Copy Summary */}
               <button
                 type="button"
                 onClick={handleCopy}
-                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors border border-white/10 text-xs flex items-center gap-1"
-                title="Copy Credential Summary"
+                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors border border-white/10 text-xs flex items-center gap-1 cursor-pointer"
+                title="Copy Credential & LinkedIn Details"
               >
                 {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                 <span className="hidden md:inline font-mono text-[11px]">{copied ? 'Copied' : 'Share'}</span>
@@ -279,7 +288,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               <button
                 type="button"
                 onClick={handlePrint}
-                className="hidden md:flex p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors border border-white/10"
+                className="hidden md:flex p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors border border-white/10 cursor-pointer"
                 title="Print Certificate"
               >
                 <Printer className="w-4 h-4" />
@@ -289,7 +298,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               <button
                 type="button"
                 onClick={handleToggleFullscreen}
-                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors border border-white/10"
+                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors border border-white/10 cursor-pointer"
                 title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
               >
                 {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -299,7 +308,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-2 rounded-xl bg-white/10 hover:bg-rose-500/80 text-white transition-colors border border-white/15"
+                className="p-2 rounded-xl bg-white/10 hover:bg-rose-500/80 text-white transition-colors border border-white/15 cursor-pointer"
                 title="Close Viewer (Esc)"
               >
                 <X className="w-4 h-4" />
@@ -307,7 +316,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             </div>
           </div>
 
-          {/* Modal Main Body */}
+          {/* Modal Main Content Stage */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
             {/* View Selector (if PDF or image both available) */}
             {cert.pdfUrl && (
@@ -316,7 +325,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setActiveTab('image')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
                       activeTab === 'image'
                         ? 'bg-indigo-600 text-white shadow'
                         : 'text-gray-400 hover:text-white'
@@ -327,7 +336,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setActiveTab('pdf')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
                       activeTab === 'pdf'
                         ? 'bg-indigo-600 text-white shadow'
                         : 'text-gray-400 hover:text-white'
@@ -339,25 +348,25 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               </div>
             )}
 
-            {/* Certificate Visual Display Stage */}
-            <div className="relative w-full rounded-2xl bg-neutral-900/60 border border-white/10 overflow-hidden flex items-center justify-center min-h-[340px] sm:min-h-[460px] p-2 sm:p-4">
+            {/* Real Certificate Image Viewer Stage */}
+            <div className="relative w-full rounded-2xl bg-neutral-900/70 border border-white/10 overflow-hidden flex items-center justify-center min-h-[340px] sm:min-h-[480px] p-2 sm:p-4 shadow-2xl">
               {/* Image Loading Spinner */}
               {imageLoading && !imageError && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-neutral-950/80 backdrop-blur-sm z-10">
                   <div className="w-10 h-10 border-3 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
-                  <p className="text-xs font-mono text-gray-400">Loading verified certificate...</p>
+                  <p className="text-xs font-mono text-gray-400">Loading certificate photo...</p>
                 </div>
               )}
 
-              {/* Broken Image Error Fallback */}
+              {/* Broken Image Fallback */}
               {imageError ? (
                 <div className="p-8 text-center max-w-md mx-auto space-y-4">
                   <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center mx-auto">
                     <AlertCircle className="w-6 h-6" />
                   </div>
-                  <h4 className="text-base font-bold text-white">Certificate unavailable</h4>
+                  <h4 className="text-base font-bold text-white">Certificate Photo Unavailable</h4>
                   <p className="text-xs text-gray-400">
-                    Certificate unavailable — please check the certificate file at <code className="text-indigo-300 font-mono">{cert.image}</code>.
+                    Image failed to load at <code className="text-indigo-300 font-mono">{certificateImage}</code>.
                   </p>
                   <button
                     type="button"
@@ -365,7 +374,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                       setImageError(false);
                       setImageLoading(true);
                     }}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold border border-white/10"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold border border-white/10 cursor-pointer"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
                     <span>Retry Loading</span>
@@ -378,10 +387,10 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                   className="w-full h-[520px] rounded-xl border border-white/10 bg-white"
                 />
               ) : (
-                <div className="overflow-auto max-w-full max-h-full flex items-center justify-center">
+                <div className="overflow-auto max-w-full max-h-full flex items-center justify-center p-2">
                   <motion.img
-                    src={cert.image}
-                    alt={cert.title}
+                    src={certificateImage}
+                    alt={`${cert.title} Real Certificate Photo`}
                     onLoad={() => setImageLoading(false)}
                     onError={() => {
                       setImageLoading(false);
@@ -396,11 +405,11 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               )}
 
               {/* Mobile Quick Zoom Bar */}
-              <div className="sm:hidden absolute bottom-3 right-3 flex items-center bg-neutral-950/80 backdrop-blur-md border border-white/10 rounded-xl p-1 z-20">
+              <div className="sm:hidden absolute bottom-3 right-3 flex items-center bg-neutral-950/90 backdrop-blur-md border border-white/10 rounded-xl p-1 z-20">
                 <button
                   type="button"
                   onClick={handleZoomOut}
-                  className="p-1.5 text-gray-300 hover:text-white"
+                  className="p-1.5 text-gray-300 hover:text-white cursor-pointer"
                 >
                   <ZoomOut className="w-3.5 h-3.5" />
                 </button>
@@ -410,7 +419,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 <button
                   type="button"
                   onClick={handleZoomIn}
-                  className="p-1.5 text-gray-300 hover:text-white"
+                  className="p-1.5 text-gray-300 hover:text-white cursor-pointer"
                 >
                   <ZoomIn className="w-3.5 h-3.5" />
                 </button>
@@ -419,15 +428,15 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
 
             {/* Certificate Details & LinkedIn Experience Meta */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Left Column: Core Info & Verification Status */}
+              {/* Left Column: Certificate Meta & Skills */}
               <div className="md:col-span-2 space-y-4">
                 <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-mono uppercase tracking-wider text-indigo-400 font-semibold">
-                      Credential Details
+                      Certificate Information
                     </span>
                     <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
-                      <ShieldCheck className="w-3.5 h-3.5" /> Confirmed
+                      <ShieldCheck className="w-3.5 h-3.5" /> Verified Document
                     </span>
                   </div>
 
@@ -448,24 +457,22 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                     </div>
                     <div className="p-3 rounded-xl bg-white/5 border border-white/5">
                       <span className="text-[10px] font-mono text-gray-400 block">Issue Date</span>
+                      <span className="text-xs font-bold text-white mt-0.5 block">{formattedDate}</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+                      <span className="text-[10px] font-mono text-gray-400 block">Issuing Authority</span>
+                      <span className="text-xs font-bold text-white mt-0.5 block">{cert.issuer}</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+                      <span className="text-[10px] font-mono text-gray-400 block">Recognition Type</span>
                       <span className="text-xs font-bold text-white mt-0.5 block">
-                        {cert.completedDate || cert.issueDate}
+                        {isCommunityBadge ? 'Community Achievement / Badge' : cert.type}
                       </span>
-                    </div>
-                    <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                      <span className="text-[10px] font-mono text-gray-400 block">Credential ID</span>
-                      <span className={`text-xs font-bold mt-0.5 block ${cert.credentialId === 'Not provided' ? 'text-gray-400 italic' : 'text-white'}`}>
-                        {cert.credentialId}
-                      </span>
-                    </div>
-                    <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                      <span className="text-[10px] font-mono text-gray-400 block">Program Type</span>
-                      <span className="text-xs font-bold text-white mt-0.5 block">{cert.type}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Skills Chips */}
+                {/* Skills Covered */}
                 <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-2.5">
                   <h4 className="text-xs font-bold text-white font-display uppercase tracking-wider flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" />
@@ -484,53 +491,60 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 </div>
               </div>
 
-              {/* Right Column: Actions & Verified Links */}
+              {/* Right Column: LinkedIn Post & Credential Actions */}
               <div className="space-y-4">
                 <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-3">
-                  <h4 className="text-xs font-bold text-white font-display uppercase tracking-wider">
-                    Verification &amp; Links
+                  <h4 className="text-xs font-bold text-white font-display uppercase tracking-wider flex items-center gap-2">
+                    <Linkedin className="w-4 h-4 text-[#0a66c2]" />
+                    LinkedIn Verification
                   </h4>
 
-                  {verifyLink ? (
-                    <a
-                      href={verifyLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-all shadow-lg shadow-emerald-600/20 cursor-pointer"
+                  {/* Exact LinkedIn Post Button */}
+                  {linkedinPostUrl ? (
+                    <button
+                      type="button"
+                      onClick={() => window.open(linkedinPostUrl, '_blank', 'noopener,noreferrer')}
+                      className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#0a66c2] hover:bg-[#004182] text-white text-xs font-bold transition-all shadow-lg shadow-[#0a66c2]/25 cursor-pointer"
                     >
-                      <ShieldCheck className="w-4 h-4" />
-                      <span>Verify Credential ↗</span>
-                    </a>
+                      <Linkedin className="w-4 h-4" />
+                      <span>View Original LinkedIn Post ↗</span>
+                    </button>
                   ) : (
                     <div className="p-3 rounded-xl bg-white/5 border border-white/5 text-center">
-                      <p className="text-[11px] font-mono text-gray-400">
-                        Official Issuer Certificate Document
+                      <p className="text-xs font-mono text-gray-400">
+                        LinkedIn post unavailable
                       </p>
                     </div>
                   )}
 
-                  {cert.linkedinUrl && (
-                    <a
-                      href={cert.linkedinUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#0077b5]/20 hover:bg-[#0077b5]/30 text-sky-300 border border-[#0077b5]/40 text-xs font-semibold transition-colors"
+                  {/* Official Credential Verification Link */}
+                  {officialVerifyUrl ? (
+                    <button
+                      type="button"
+                      onClick={() => window.open(officialVerifyUrl, '_blank', 'noopener,noreferrer')}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 text-xs font-semibold transition-colors cursor-pointer"
                     >
-                      <span>View on LinkedIn</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
+                      <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                      <span>Verify Official Credential ↗</span>
+                    </button>
+                  ) : (
+                    <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 text-[11px] font-mono text-gray-400 text-center">
+                      Verified Certificate Photo
+                    </div>
                   )}
 
+                  {/* Download Certificate Asset */}
                   <a
-                    href={cert.image}
+                    href={certificateImage}
                     download={`${cert.id}.svg`}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-gray-200 border border-white/10 text-xs font-semibold transition-colors"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-gray-200 border border-white/10 text-xs font-semibold transition-colors cursor-pointer"
                   >
                     <FileText className="w-3.5 h-3.5" />
                     <span>Download Certificate Asset</span>
                   </a>
                 </div>
 
+                {/* Direct Contact for Verification */}
                 <div className="p-4 rounded-2xl bg-neutral-900 border border-white/5 text-center">
                   <p className="text-[11px] font-mono text-gray-400">
                     Need verification or reference details for recruitment?
@@ -538,7 +552,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                   <a
                     href="#contact"
                     onClick={onClose}
-                    className="inline-block mt-2 text-xs font-semibold text-indigo-400 hover:text-indigo-300 underline"
+                    className="inline-block mt-2 text-xs font-semibold text-indigo-400 hover:text-indigo-300 underline cursor-pointer"
                   >
                     Contact Kishor directly →
                   </a>

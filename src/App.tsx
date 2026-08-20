@@ -83,6 +83,7 @@ export function App() {
         <HeroSection
           onOpenResume={() => setIsResumeOpen(true)}
           onOpenAiChat={() => setIsAiChatOpen(true)}
+          isDarkMode={isDarkMode}
         />
 
         <AboutSection />

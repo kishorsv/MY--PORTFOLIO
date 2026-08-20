@@ -22,11 +22,13 @@ import { useProfilePhoto } from '../utils/photoManager';
 interface ProfessionalProfileProps {
   className?: string;
   showBadges?: boolean;
+  isDarkMode?: boolean;
 }
 
 export const ProfessionalProfile: React.FC<ProfessionalProfileProps> = ({
   className = '',
   showBadges = true,
+  isDarkMode = true,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -191,14 +193,58 @@ export const ProfessionalProfile: React.FC<ProfessionalProfileProps> = ({
               />
             </motion.div>
 
+            {/* Dynamic Slow-Moving Radial Gradient Overlay with Ambient Color Transitions */}
+            <motion.div
+              animate={{
+                x: ['-6%', '6%', '-4%', '5%', '-6%'],
+                y: ['-5%', '5%', '6%', '-4%', '-5%'],
+                scale: [1, 1.15, 1.08, 1.12, 1],
+                opacity: isDarkMode ? [0.65, 0.85, 0.7, 0.9, 0.65] : [0.35, 0.5, 0.4, 0.55, 0.35],
+              }}
+              transition={{
+                duration: 18,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+              className="absolute -inset-10 pointer-events-none mix-blend-overlay transition-opacity duration-700"
+              style={{
+                background: isDarkMode
+                  ? 'radial-gradient(ellipse 70% 60% at 50% 45%, rgba(99, 102, 241, 0.42) 0%, rgba(168, 85, 247, 0.28) 35%, rgba(6, 182, 212, 0.2) 65%, transparent 100%)'
+                  : 'radial-gradient(ellipse 70% 60% at 50% 45%, rgba(79, 70, 229, 0.28) 0%, rgba(147, 51, 234, 0.18) 38%, rgba(14, 165, 233, 0.14) 65%, transparent 100%)',
+              }}
+            />
+
+            {/* Counter-Moving Secondary Chromatic Glow */}
+            <motion.div
+              animate={{
+                x: ['5%', '-7%', '4%', '-5%', '5%'],
+                y: ['7%', '-5%', '-3%', '6%', '7%'],
+                scale: [1.12, 0.96, 1.16, 1.02, 1.12],
+                opacity: isDarkMode ? [0.45, 0.7, 0.55, 0.65, 0.45] : [0.25, 0.4, 0.3, 0.45, 0.25],
+              }}
+              transition={{
+                duration: 14,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                delay: 1.5,
+              }}
+              className="absolute -inset-8 pointer-events-none mix-blend-soft-light transition-opacity duration-700"
+              style={{
+                background: isDarkMode
+                  ? 'radial-gradient(circle 55% at 52% 58%, rgba(6, 182, 212, 0.35) 0%, rgba(139, 92, 246, 0.22) 42%, rgba(99, 102, 241, 0.12) 70%, transparent 90%)'
+                  : 'radial-gradient(circle 55% at 52% 58%, rgba(14, 165, 233, 0.22) 0%, rgba(129, 140, 248, 0.16) 42%, rgba(99, 102, 241, 0.1) 70%, transparent 90%)',
+              }}
+            />
+
             {/* Glowing Futuristic Holographic Gradient Overlay */}
             <div
-              className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-60 group-hover:opacity-85 transition-opacity duration-500"
+              className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-45 group-hover:opacity-65 transition-opacity duration-500"
               style={{
-                background:
-                  'linear-gradient(135deg, rgba(99,102,241,0.35) 0%, rgba(168,85,247,0.2) 35%, rgba(6,182,212,0.3) 70%, rgba(99,102,241,0.35) 100%)',
+                background: isDarkMode
+                  ? 'linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(168,85,247,0.15) 35%, rgba(6,182,212,0.2) 70%, rgba(99,102,241,0.25) 100%)'
+                  : 'linear-gradient(135deg, rgba(79,70,229,0.18) 0%, rgba(147,51,234,0.12) 35%, rgba(14,165,233,0.15) 70%, rgba(79,70,229,0.18) 100%)',
                 backgroundSize: '250% 250%',
-                animation: 'gradientMove 8s ease infinite',
+                animation: 'gradientMove 10s ease infinite',
               }}
             />
 
