@@ -2,10 +2,8 @@ import React from 'react';
 import { motion } from 'motion/react';
 import {
   Github,
-  ExternalLink,
   Sparkles,
   ArrowUpRight,
-  Play,
   Eye,
 } from 'lucide-react';
 import { ProjectItem } from '../types';
@@ -17,7 +15,6 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) => {
-  const hasValidLiveUrl = isValidExternalUrl(project.liveUrl);
   const hasValidGithubUrl = isValidExternalUrl(project.githubUrl);
 
   return (
@@ -56,21 +53,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
 
         {/* Hover Quick Actions Overlay */}
         <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 p-4 z-20">
-          {hasValidLiveUrl && (
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-xs shadow-lg shadow-indigo-600/40 hover:scale-105 transition-all cursor-pointer"
-              title={`Open Live Demo for ${project.title}`}
-              aria-label={`Open live demo for ${project.title}`}
-            >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span>Live Demo</span>
-              <ExternalLink className="w-3.5 h-3.5 opacity-80" />
-            </a>
-          )}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -79,7 +61,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
             className="flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white/20 hover:bg-white/30 text-white font-semibold text-xs backdrop-blur-md border border-white/20 hover:scale-105 transition-all cursor-pointer"
           >
             <Eye className="w-3.5 h-3.5" />
-            <span>Details</span>
+            <span>View Details</span>
           </button>
         </div>
       </div>
@@ -135,20 +117,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
                 aria-label={`View GitHub repository for ${project.title}`}
               >
                 <Github className="w-4 h-4" />
-              </a>
-            )}
-            {hasValidLiveUrl && (
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/25 transition-all hover:scale-105 cursor-pointer border border-indigo-400/30"
-                title={`Launch live demo for ${project.title}`}
-                aria-label={`Launch live demo for ${project.title}`}
-              >
-                <Play className="w-3 h-3 fill-current" />
-                <span>Live Demo</span>
-                <ExternalLink className="w-3 h-3 opacity-80" />
               </a>
             )}
           </div>
