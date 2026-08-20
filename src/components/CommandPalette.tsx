@@ -61,7 +61,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         { id: 'nav-about', label: 'Go to About Me', icon: User, action: () => scrollToSection('about') },
         { id: 'nav-skills', label: 'Go to Technical Skills', icon: Cpu, action: () => scrollToSection('skills') },
         { id: 'nav-projects', label: 'Go to Featured Projects', icon: FolderGit2, action: () => scrollToSection('projects') },
-        { id: 'nav-experience', label: 'Go to Experience & Journey', icon: Briefcase, action: () => scrollToSection('experience') },
         { id: 'nav-education', label: 'Go to Education', icon: GraduationCap, action: () => scrollToSection('education') },
         { id: 'nav-certifications', label: 'Go to Certifications', icon: Award, action: () => scrollToSection('certifications') },
         { id: 'nav-github', label: 'Go to GitHub Activity', icon: Github, action: () => scrollToSection('github') },
