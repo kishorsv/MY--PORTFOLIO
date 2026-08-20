@@ -7,7 +7,6 @@ export const educationData: EducationItem = {
   startYear: "2025",
   graduationYear: "2029",
   location: "Mysuru, Karnataka, India",
-  gradeOrGpa: "Pursuing (Batch 2025 – 2029)",
   coursework: [
     "Data Structures & Algorithms (DSA)",
     "Artificial Intelligence & Machine Learning",
