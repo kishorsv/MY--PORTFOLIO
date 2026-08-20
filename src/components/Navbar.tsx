@@ -88,15 +88,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           aria-label="Kishor S V Home"
         >
           <div className="relative">
-            <div className="w-10 h-10 rounded-xl overflow-hidden p-0.5 bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 shadow-md group-hover:scale-105 transition-transform">
-              <img
-                src={profileData.avatarUrl || profileData.photoUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80"}
-                alt={profileData.name}
-                className="w-full h-full object-cover rounded-[10px]"
-                referrerPolicy="no-referrer"
-              />
+            <div className="w-10 h-10 rounded-xl p-0.5 bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 shadow-md group-hover:scale-105 transition-transform flex items-center justify-center">
+              <div className="w-full h-full rounded-[10px] bg-neutral-950 flex items-center justify-center border border-white/10">
+                <span className="font-display font-black text-sm tracking-tighter bg-gradient-to-r from-indigo-300 via-white to-cyan-300 bg-clip-text text-transparent">
+                  K
+                </span>
+              </div>
             </div>
-            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-[#020204] rounded-full" />
+            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-[#020204] rounded-full shadow-[0_0_8px_#10b981]" />
           </div>
           <div>
             <span className="font-display font-semibold text-lg text-white tracking-tight group-hover:text-indigo-300 transition-colors">
