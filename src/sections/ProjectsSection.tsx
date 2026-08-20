@@ -6,6 +6,7 @@ import { ProjectCard } from '../components/ProjectCard';
 import { ProjectModal } from '../components/ProjectModal';
 import { projectsData } from '../data/projects';
 import { ProjectCategory, ProjectItem } from '../types';
+import { isValidExternalUrl } from '../utils/url';
 
 export const ProjectsSection: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<ProjectCategory>('All');
@@ -18,7 +19,7 @@ export const ProjectsSection: React.FC = () => {
   const filteredProjects = useMemo(() => {
     return (projectsData || []).filter((project) => {
       const matchesCategory = activeCategory === 'All' || project.category === activeCategory;
-      const matchesLive = !liveOnly || Boolean(project.liveUrl);
+      const matchesLive = !liveOnly || isValidExternalUrl(project.liveUrl);
       const query = searchQuery.toLowerCase().trim();
       if (!query) return matchesCategory && matchesLive;
 

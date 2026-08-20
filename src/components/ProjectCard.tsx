@@ -9,6 +9,7 @@ import {
   Eye,
 } from 'lucide-react';
 import { ProjectItem } from '../types';
+import { isValidExternalUrl } from '../utils/url';
 
 interface ProjectCardProps {
   project: ProjectItem;
@@ -16,6 +17,9 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) => {
+  const hasValidLiveUrl = isValidExternalUrl(project.liveUrl);
+  const hasValidGithubUrl = isValidExternalUrl(project.githubUrl);
+
   return (
     <motion.div
       layout
@@ -52,14 +56,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
 
         {/* Hover Quick Actions Overlay */}
         <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 p-4 z-20">
-          {project.liveUrl && (
+          {hasValidLiveUrl && (
             <a
               href={project.liveUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
               className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-xs shadow-lg shadow-indigo-600/40 hover:scale-105 transition-all cursor-pointer"
-              title="Open Live Interactive Demo"
+              title={`Open Live Demo for ${project.title}`}
               aria-label={`Open live demo for ${project.title}`}
             >
               <Play className="w-3.5 h-3.5 fill-current" />
@@ -121,11 +125,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
           </button>
 
           <div className="flex items-center gap-2">
-            {project.githubUrl && (
+            {hasValidGithubUrl && (
               <a
                 href={project.githubUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors border border-white/10"
                 title="View GitHub Repository"
                 aria-label={`View GitHub repository for ${project.title}`}
@@ -133,11 +137,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
                 <Github className="w-4 h-4" />
               </a>
             )}
-            {project.liveUrl && (
+            {hasValidLiveUrl && (
               <a
                 href={project.liveUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/25 transition-all hover:scale-105 cursor-pointer border border-indigo-400/30"
                 title={`Launch live demo for ${project.title}`}
                 aria-label={`Launch live demo for ${project.title}`}
@@ -153,3 +157,4 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect }) =
     </motion.div>
   );
 };
+

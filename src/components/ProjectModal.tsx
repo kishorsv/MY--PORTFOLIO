@@ -18,6 +18,7 @@ import {
   BookOpen,
 } from 'lucide-react';
 import { ProjectItem } from '../types';
+import { isValidExternalUrl } from '../utils/url';
 
 interface ProjectModalProps {
   project: ProjectItem | null;
@@ -31,7 +32,8 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
 
   if (!project) return null;
 
-  const hasLiveUrl = Boolean(project.liveUrl);
+  const hasLiveUrl = isValidExternalUrl(project.liveUrl);
+  const hasGithubUrl = isValidExternalUrl(project.githubUrl);
 
   const getDeviceWidth = () => {
     switch (deviceView) {
@@ -92,11 +94,11 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
 
               {/* Action Buttons in Header */}
               <div className="flex items-center gap-2">
-                {project.githubUrl && (
+                {hasGithubUrl && (
                   <a
                     href={project.githubUrl}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/10 backdrop-blur-md transition-all cursor-pointer shadow-sm"
                   >
                     <Github className="w-4 h-4" />
@@ -107,7 +109,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
                   <a
                     href={project.liveUrl}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all cursor-pointer hover:scale-105"
                   >
                     <Play className="w-3.5 h-3.5 fill-current" />

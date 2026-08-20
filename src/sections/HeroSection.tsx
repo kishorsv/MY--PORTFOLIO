@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import {
   ArrowRight,
@@ -30,34 +30,65 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   const heroRef = useRef<HTMLElement>(null);
   const portraitAnchorRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isInsideHero, setIsInsideHero] = useState<boolean>(false);
+  const radialGlowRef = useRef<HTMLDivElement>(null);
 
-  // Motion values for ultra-smooth spring-based cursor tracking
+  // Motion values for hardware-accelerated spring-based cursor tracking without React re-renders
   const rawMouseX = useMotionValue(0);
   const rawMouseY = useMotionValue(0);
 
-  // Springs for silky backlight movement
-  const springConfig = { stiffness: 140, damping: 20, mass: 0.6 };
+  // Optimized spring physics (critically damped for silky response and low CPU overhead)
+  const springConfig = { stiffness: 120, damping: 24, mass: 0.5 };
   const smoothMouseX = useSpring(rawMouseX, springConfig);
   const smoothMouseY = useSpring(rawMouseY, springConfig);
 
-  // Responsive transforms for backlight shift behind portrait
-  const backlightX = useTransform(smoothMouseX, [-600, 600], [-80, 80]);
-  const backlightY = useTransform(smoothMouseY, [-600, 600], [-70, 70]);
-  const backlightScale = useTransform(smoothMouseX, [-600, 0, 600], [1.15, 1.0, 1.2]);
-  const backlightRotate = useTransform(smoothMouseX, [-600, 600], [-25, 25]);
+  // Direct GPU transforms for backlight shift behind portrait
+  const backlightX = useTransform(smoothMouseX, [-600, 600], [-70, 70]);
+  const backlightY = useTransform(smoothMouseY, [-600, 600], [-60, 60]);
+  const backlightScale = useTransform(smoothMouseX, [-600, 0, 600], [1.12, 1.0, 1.15]);
+  const backlightRotate = useTransform(smoothMouseX, [-600, 600], [-20, 20]);
 
-  // Secondary dynamic rim flare offset
-  const rimGlowX = useTransform(smoothMouseX, [-600, 600], [-110, 110]);
-  const rimGlowY = useTransform(smoothMouseY, [-600, 600], [-90, 90]);
+  // Directional specular rim flare
+  const rimGlowX = useTransform(smoothMouseX, [-600, 600], [-95, 95]);
+  const rimGlowY = useTransform(smoothMouseY, [-600, 600], [-80, 80]);
 
   useEffect(() => {
-    const handleGlobalMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: e.clientX,
-        y: e.clientY,
-      });
+    let rafId: number | null = null;
+    let isHeroVisible = true;
+    let lastX = 0;
+    let lastY = 0;
+    let isDirty = false;
+
+    // IntersectionObserver to completely halt mouse updates when Hero is scrolled out of view (saves battery)
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isHeroVisible = entry.isIntersecting;
+      },
+      { threshold: 0.05 }
+    );
+
+    if (heroRef.current) {
+      observer.observe(heroRef.current);
+    }
+
+    const updateGlowPosition = () => {
+      if (radialGlowRef.current) {
+        radialGlowRef.current.style.setProperty('--mouse-x', `${lastX}px`);
+        radialGlowRef.current.style.setProperty('--mouse-y', `${lastY}px`);
+      }
+      isDirty = false;
+      rafId = null;
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isHeroVisible) return;
+
+      lastX = e.clientX;
+      lastY = e.clientY;
+
+      if (!isDirty) {
+        isDirty = true;
+        rafId = requestAnimationFrame(updateGlowPosition);
+      }
 
       if (portraitAnchorRef.current) {
         const rect = portraitAnchorRef.current.getBoundingClientRect();
@@ -68,8 +99,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       }
     };
 
-    window.addEventListener('mousemove', handleGlobalMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', handleGlobalMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (rafId) cancelAnimationFrame(rafId);
+      observer.disconnect();
+    };
   }, [rawMouseX, rawMouseY]);
 
   const scrollToProjects = () => {
@@ -84,15 +120,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     <section
       id="hero"
       ref={heroRef}
-      onMouseEnter={() => setIsInsideHero(true)}
-      onMouseLeave={() => setIsInsideHero(false)}
-      className="relative min-h-[90vh] flex items-center justify-center pt-28 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-transparent"
+      className="relative min-h-[90vh] flex items-center justify-center pt-28 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-transparent transform-gpu"
     >
-      {/* Dynamic Mouse Following Radial Ambient Canvas Glow */}
+      {/* Hardware-accelerated dynamic radial ambient glow (Zero React re-renders) */}
       <div
-        className="pointer-events-none absolute -inset-px opacity-35 transition-opacity duration-500 hidden md:block"
+        ref={radialGlowRef}
+        className="pointer-events-none absolute -inset-px opacity-35 transition-opacity duration-300 hidden md:block will-change-[background] transform-gpu"
         style={{
-          background: `radial-gradient(750px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.05) 45%, transparent 75%)`,
+          background: `radial-gradient(750px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99, 102, 241, 0.14), rgba(168, 85, 247, 0.04) 45%, transparent 75%)`,
         }}
       />
 
@@ -275,7 +310,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               {/* ======================================================== */}
               {/* 🌟 MOUSE-REACTIVE AMBIENT GLOW BACKLIGHT ENGINE 🌟 */}
               {/* ======================================================== */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10 overflow-visible">
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10 overflow-visible transform-gpu">
                 {/* 1. Primary Dynamic Volumetric Light Source (Follows cursor behind the portrait) */}
                 <motion.div
                   style={{
@@ -284,9 +319,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     scale: backlightScale,
                     rotate: backlightRotate,
                   }}
-                  className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full blur-[70px] opacity-75 sm:opacity-85 mix-blend-screen transition-opacity duration-300"
+                  className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full blur-[70px] opacity-75 sm:opacity-85 mix-blend-screen will-change-transform transform-gpu"
                 >
-                  <div className="w-full h-full rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-cyan-400 opacity-90 animate-pulse" />
+                  <div className="w-full h-full rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-cyan-400 opacity-90 animate-pulse transform-gpu" />
                 </motion.div>
 
                 {/* 2. Secondary High-Intensity Directional Rim Light Source */}
@@ -295,13 +330,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     x: rimGlowX,
                     y: rimGlowY,
                   }}
-                  className="absolute w-56 h-56 sm:w-72 sm:h-72 rounded-full blur-[50px] opacity-60 sm:opacity-70 mix-blend-color-dodge pointer-events-none"
+                  className="absolute w-56 h-56 sm:w-72 sm:h-72 rounded-full blur-[50px] opacity-60 sm:opacity-70 mix-blend-color-dodge pointer-events-none will-change-transform transform-gpu"
                 >
-                  <div className="w-full h-full rounded-full bg-radial from-cyan-300 via-indigo-500/40 to-transparent" />
+                  <div className="w-full h-full rounded-full bg-radial from-cyan-300 via-indigo-500/40 to-transparent transform-gpu" />
                 </motion.div>
 
                 {/* 3. Deep Atmospheric Ambient Base Glow (Cybernetic aura anchor) */}
-                <div className="absolute -inset-12 bg-gradient-to-tr from-indigo-900/40 via-purple-900/30 to-cyan-900/30 rounded-full blur-3xl opacity-80 pointer-events-none" />
+                <div className="absolute -inset-12 bg-gradient-to-tr from-indigo-900/40 via-purple-900/30 to-cyan-900/30 rounded-full blur-3xl opacity-80 pointer-events-none transform-gpu" />
 
                 {/* 4. Subtle Shimmering Outer Ring Beam */}
                 <motion.div
@@ -313,7 +348,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     rotate: { duration: 24, repeat: Infinity, ease: 'linear' },
                     scale: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
                   }}
-                  className="absolute w-80 h-80 sm:w-[420px] sm:h-[420px] rounded-full border border-indigo-500/20 blur-xl pointer-events-none opacity-40"
+                  className="absolute w-80 h-80 sm:w-[420px] sm:h-[420px] rounded-full border border-indigo-500/20 blur-xl pointer-events-none opacity-40 will-change-transform transform-gpu"
                 />
               </div>
 
