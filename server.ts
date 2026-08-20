@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
@@ -9,7 +10,8 @@ dotenv.config();
 const app = express();
 const PORT = 3000;
 
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 // Server-side Gemini initialization with user agent
 const ai = new GoogleGenAI({
@@ -24,6 +26,50 @@ const ai = new GoogleGenAI({
 // API Routes
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// Permanent Photo Upload & Storage API
+app.post("/api/upload-photo", (req, res) => {
+  try {
+    const { imageBase64 } = req.body;
+    if (!imageBase64 || typeof imageBase64 !== "string") {
+      res.status(400).json({ error: "No image data provided" });
+      return;
+    }
+
+    // Strip base64 header if present
+    const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, "");
+    const buffer = Buffer.from(base64Data, "base64");
+
+    const publicDir = path.join(process.cwd(), "public");
+    const publicImagesDir = path.join(publicDir, "images");
+    if (!fs.existsSync(publicImagesDir)) {
+      fs.mkdirSync(publicImagesDir, { recursive: true });
+    }
+
+    const targetPhotoPath = path.join(publicImagesDir, "profile-photo.jpg");
+    fs.writeFileSync(targetPhotoPath, buffer);
+    fs.writeFileSync(path.join(publicDir, "profile-photo.jpg"), buffer);
+    fs.writeFileSync(path.join(publicDir, "kishor-photo.jpg"), buffer);
+
+    // Also write to dist/ if dist exists
+    const distDir = path.join(process.cwd(), "dist");
+    const distImagesDir = path.join(distDir, "images");
+    if (fs.existsSync(distDir)) {
+      if (!fs.existsSync(distImagesDir)) {
+        fs.mkdirSync(distImagesDir, { recursive: true });
+      }
+      fs.writeFileSync(path.join(distImagesDir, "profile-photo.jpg"), buffer);
+      fs.writeFileSync(path.join(distDir, "profile-photo.jpg"), buffer);
+      fs.writeFileSync(path.join(distDir, "kishor-photo.jpg"), buffer);
+    }
+
+    console.log("[Photo Uploaded] Successfully saved permanent photo to /images/profile-photo.jpg");
+    res.json({ success: true, photoUrl: "/images/profile-photo.jpg?t=" + Date.now() });
+  } catch (err) {
+    console.error("Error saving photo:", err);
+    res.status(500).json({ error: "Failed to save photo" });
+  }
 });
 
 // Contact Form submission API

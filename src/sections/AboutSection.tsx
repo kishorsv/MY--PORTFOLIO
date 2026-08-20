@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { SectionHeading } from '../components/SectionHeading';
 import { profileData } from '../data/profile';
-import { MotionProfilePhoto } from '../components/MotionProfilePhoto';
+import { ProfilePhotoFrame } from '../components/ProfilePhotoFrame';
 
 const iconMap: Record<string, React.ElementType> = {
   Brain,
@@ -41,33 +41,14 @@ export const AboutSection: React.FC = () => {
 
         {/* Bio, Motion Photo & Stats Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16 items-stretch">
-          {/* Motion Photo Card in About Section */}
+          {/* Developer Original Photo Asset in About Section */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="lg:col-span-4 rounded-3xl bg-white/5 border border-white/10 p-6 backdrop-blur-md shadow-2xl flex flex-col items-center justify-center text-center relative overflow-hidden"
+            className="lg:col-span-4 rounded-3xl bg-white/5 border border-white/10 p-6 sm:p-8 backdrop-blur-md shadow-2xl flex flex-col items-center justify-center relative overflow-hidden"
           >
-            <div className="w-full flex justify-center py-2">
-              <MotionProfilePhoto variant="about" showBadges={false} />
-            </div>
-
-            <div className="mt-4 w-full text-center">
-              <h4 className="text-base font-bold text-white font-display">{profileData.name}</h4>
-              <p className="text-xs font-mono text-indigo-400 mt-0.5">{profileData.headline}</p>
-              
-              <div className="flex items-center justify-center gap-4 mt-3 pt-3 border-t border-white/10 text-xs font-mono text-gray-400">
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>{profileData.location}</span>
-                </span>
-                <span>•</span>
-                <span className="flex items-center gap-1 text-emerald-400">
-                  <Briefcase className="w-3.5 h-3.5" />
-                  <span>Open for Roles</span>
-                </span>
-              </div>
-            </div>
+            <ProfilePhotoFrame variant="about" showBadges={false} />
           </motion.div>
 
           {/* Main Story Panel */}

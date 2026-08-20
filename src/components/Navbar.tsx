@@ -90,13 +90,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           aria-label="Kishor S V Home"
         >
           <div className="relative">
-            <div className="w-10 h-10 rounded-xl p-0.5 bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 shadow-md group-hover:scale-105 transition-transform overflow-hidden">
-              <img
-                src={avatarUrl || "/kishor-avatar.svg"}
-                alt={profileData.name}
-                className="w-full h-full object-cover object-top rounded-[10px]"
-                referrerPolicy="no-referrer"
-              />
+            <div className="w-10 h-10 rounded-xl p-[1.5px] bg-gradient-to-tr from-purple-500 via-indigo-500 to-cyan-400 shadow-md group-hover:scale-105 transition-transform">
+              <div className="w-full h-full bg-[#0a0c10] rounded-[10px] flex items-center justify-center">
+                <span className="font-mono font-bold text-base text-transparent bg-clip-text bg-gradient-to-br from-white via-cyan-100 to-cyan-300">
+                  K
+                </span>
+              </div>
             </div>
             <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-[#020204] rounded-full shadow-[0_0_8px_#10b981]" />
           </div>
@@ -105,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               {profileData.name}
             </span>
             <span className="hidden sm:block text-[11px] font-mono text-gray-400 -mt-0.5 tracking-wider uppercase">
-              AI/ML & Full-Stack
+              AI/ML &amp; Full-Stack
             </span>
           </div>
         </button>

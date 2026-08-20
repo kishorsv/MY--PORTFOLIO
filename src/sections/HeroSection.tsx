@@ -15,7 +15,7 @@ import {
   Terminal,
 } from 'lucide-react';
 import { profileData } from '../data/profile';
-import { ProfessionalProfile } from '../components/ProfessionalProfile';
+import { ProfilePhotoFrame } from '../components/ProfilePhotoFrame';
 
 interface HeroSectionProps {
   onOpenResume: () => void;
@@ -352,14 +352,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 />
               </div>
 
-              {/* Portrait Container */}
+              {/* Main Visual Display - Profile Portrait */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="w-full flex justify-center relative z-10"
               >
-                <ProfessionalProfile isDarkMode={isDarkMode} />
+                <ProfilePhotoFrame variant="hero" showBadges={true} />
               </motion.div>
             </div>
           </div>

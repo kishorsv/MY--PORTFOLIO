@@ -1,73 +1,82 @@
 import { useState, useEffect } from 'react';
 import { profileData } from '../data/profile';
 
-const STORAGE_KEY = 'portfolio_custom_photo';
-const PHOTO_EVENT = 'portfolio_photo_changed';
+const PHOTO_STORAGE_KEY = 'kishor_exact_profile_photo_v3';
+const EVENT_NAME = 'kishor-photo-synced';
 
+/**
+ * Returns the exact profile portrait photo URL
+ */
 export function getStoredProfilePhoto(): string {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved && saved.trim()) {
-      return saved.trim();
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem(PHOTO_STORAGE_KEY);
+    if (saved && saved.length > 50) {
+      return saved;
     }
-  } catch {
-    // ignore
   }
-  return profileData.photoUrl || '/kishor-portrait.svg';
+  return profileData.photoUrl || '/images/profile-photo.jpg';
 }
 
+/**
+ * Returns the avatar photo URL
+ */
 export function getStoredAvatarPhoto(): string {
+  return getStoredProfilePhoto();
+}
+
+/**
+ * Uploads/persists the exact uploaded photo asset to server and browser storage
+ */
+export async function savePermanentPhoto(imageBase64: string): Promise<boolean> {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved && saved.trim()) {
-      return saved.trim();
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(PHOTO_STORAGE_KEY, imageBase64);
+      window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: imageBase64 }));
     }
-  } catch {
-    // ignore
-  }
-  return profileData.avatarUrl || '/kishor-avatar.svg';
-}
 
-export function saveProfilePhoto(newPhotoUrl: string) {
-  try {
-    if (newPhotoUrl) {
-      localStorage.setItem(STORAGE_KEY, newPhotoUrl);
-    } else {
-      localStorage.removeItem(STORAGE_KEY);
-    }
-    window.dispatchEvent(new CustomEvent(PHOTO_EVENT, { detail: newPhotoUrl }));
-  } catch {
-    // ignore
+    // Also persist directly to server disk at /public/images/profile-photo.jpg
+    fetch('/api/upload-photo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageBase64 }),
+    }).catch((err) => console.warn('Server photo sync background notice:', err));
+
+    return true;
+  } catch (err) {
+    console.error('Failed to save photo:', err);
+    return false;
   }
 }
 
-export function resetProfilePhoto() {
-  saveProfilePhoto('');
-}
-
+/**
+ * Hook to reactively consume the active profile photo
+ */
 export function useProfilePhoto() {
-  const [photo, setPhoto] = useState<string>(getStoredProfilePhoto);
-  const [avatar, setAvatar] = useState<string>(getStoredAvatarPhoto);
+  const [photoUrl, setPhotoUrl] = useState<string>(() => getStoredProfilePhoto());
 
   useEffect(() => {
-    const handleUpdate = () => {
-      setPhoto(getStoredProfilePhoto());
-      setAvatar(getStoredAvatarPhoto());
+    const handleUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<string>;
+      if (customEvent.detail) {
+        setPhotoUrl(customEvent.detail);
+      } else {
+        setPhotoUrl(getStoredProfilePhoto());
+      }
     };
 
-    window.addEventListener(PHOTO_EVENT, handleUpdate);
+    window.addEventListener(EVENT_NAME, handleUpdate);
     window.addEventListener('storage', handleUpdate);
 
     return () => {
-      window.removeEventListener(PHOTO_EVENT, handleUpdate);
+      window.removeEventListener(EVENT_NAME, handleUpdate);
       window.removeEventListener('storage', handleUpdate);
     };
   }, []);
 
   return {
-    photoUrl: photo,
-    avatarUrl: avatar,
-    savePhoto: saveProfilePhoto,
-    resetPhoto: resetProfilePhoto,
+    photoUrl,
+    avatarUrl: photoUrl,
+    setPermanentPhoto: savePermanentPhoto,
   };
 }
+

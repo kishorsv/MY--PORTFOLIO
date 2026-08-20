@@ -2,8 +2,8 @@ import { ProfileData } from '../types';
 
 export const profileData: ProfileData = {
   name: "Kishor S V",
-  photoUrl: "/kishor-portrait.svg",
-  avatarUrl: "/kishor-avatar.svg",
+  photoUrl: "/images/profile-photo.jpg",
+  avatarUrl: "/images/profile-photo.jpg",
   titles: [
     "AI/ML Engineer",
     "Full-Stack Developer",
