@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#1e2433" />
+      <stop offset="60%" stop-color="#0e1118" />
+      <stop offset="100%" stop-color="#05070a" />
+    </radialGradient>
+
+    <!-- Ambient Studio Spotlight -->
+    <radialGradient id="spotlight" cx="50%" cy="28%" r="40%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.25" />
+      <stop offset="60%" stop-color="#38bdf8" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Suit Navy Gradient -->
+    <linearGradient id="suitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="45%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#090d16" />
+    </linearGradient>
+
+    <!-- Suit Lapel Gradient -->
+    <linearGradient id="lapelGrad" x1="0%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#283548" />
+      <stop offset="100%" stop-color="#0b111e" />
+    </linearGradient>
+
+    <!-- Shirt Sky Blue Gradient -->
+    <linearGradient id="shirtGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e0f2fe" />
+      <stop offset="60%" stop-color="#bae6fd" />
+      <stop offset="100%" stop-color="#7dd3fc" />
+    </linearGradient>
+
+    <!-- Skin Tone Gradient -->
+    <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4976a" />
+      <stop offset="50%" stop-color="#c68352" />
+      <stop offset="100%" stop-color="#9a5a2a" />
+    </linearGradient>
+
+    <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2a2522" />
+      <stop offset="60%" stop-color="#141110" />
+      <stop offset="100%" stop-color="#050404" />
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Studio Background -->
+  <rect width="600" height="800" fill="url(#bgGrad)" />
+  <circle cx="300" cy="260" r="280" fill="url(#spotlight)" />
+
+  <!-- Body / Torso - Dark Navy Suit -->
+  <g id="suit-body">
+    <!-- Suit Shoulders & Body -->
+    <path d="M 120 780 L 140 430 Q 210 340 300 340 Q 390 340 460 430 L 480 780 Z" fill="url(#suitGrad)" />
+    
+    <!-- Light Blue Collared Shirt Front -->
+    <path d="M 255 330 L 345 330 L 330 680 L 270 680 Z" fill="url(#shirtGrad)" />
+    
+    <!-- Shirt Placket & Buttons -->
+    <line x1="300" y1="360" x2="300" y2="670" stroke="#94a3b8" stroke-width="2" />
+    <circle cx="300" cy="420" r="3.5" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
+    <circle cx="300" cy="490" r="3.5" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
+    <circle cx="300" cy="560" r="3.5" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
+    <circle cx="300" cy="630" r="3.5" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
+
+    <!-- Shirt Collar Wings -->
+    <!-- Left Collar -->
+    <polygon points="255,330 295,385 275,395 240,345" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1.5" />
+    <!-- Right Collar -->
+    <polygon points="345,330 305,385 325,395 360,345" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="1.5" />
+
+    <!-- Suit Lapels (Left & Right) -->
+    <!-- Left Lapel -->
+    <path d="M 175 420 L 245 340 L 255 450 L 285 580 L 195 780 L 135 780 Z" fill="url(#lapelGrad)" stroke="#334155" stroke-width="1.5" />
+    <!-- Right Lapel -->
+    <path d="M 425 420 L 355 340 L 345 450 L 315 580 L 405 780 L 465 780 Z" fill="url(#lapelGrad)" stroke="#334155" stroke-width="1.5" />
+
+    <!-- Suit Single Button Front -->
+    <circle cx="300" cy="620" r="6" fill="#1e293b" stroke="#475569" stroke-width="1.5" />
+
+    <!-- Pocket Square or Lapel Notch -->
+    <line x1="210" y1="445" x2="245" y2="440" stroke="#475569" stroke-width="2" />
+    <line x1="390" y1="445" x2="355" y2="440" stroke="#475569" stroke-width="2" />
+    
+    <!-- Left Breast Pocket -->
+    <rect x="200" y="475" width="40" height="4" rx="2" fill="#334155" />
+  </g>
+
+  <!-- Neck -->
+  <g id="neck">
+    <path d="M 270 300 L 270 360 Q 300 375 330 360 L 330 300 Z" fill="#b47443" />
+    <!-- Neck Shadow -->
+    <path d="M 270 300 Q 300 330 330 300 L 330 315 Q 300 345 270 315 Z" fill="#88441c" opacity="0.4" />
+  </g>
+
+  <!-- Head & Face Structure -->
+  <g id="head">
+    <!-- Ears -->
+    <ellipse cx="230" cy="245" rx="14" ry="22" fill="#c68352" />
+    <ellipse cx="230" cy="245" rx="8" ry="14" fill="#a46132" />
+    <!-- Small Left Earring Stud -->
+    <circle cx="225" cy="258" r="2.5" fill="#e2e8f0" stroke="#94a3b8" stroke-width="0.8" />
+
+    <ellipse cx="370" cy="245" rx="14" ry="22" fill="#c68352" />
+    <ellipse cx="370" cy="245" rx="8" ry="14" fill="#a46132" />
+
+    <!-- Head / Jaw Silhouette -->
+    <path d="M 238 210 Q 235 150 300 145 Q 365 150 362 210 Q 362 270 335 295 Q 300 315 265 295 Q 238 270 238 210 Z" fill="url(#skinGrad)" />
+
+    <!-- Hair (Stylish Voluminous Pompadour / Textured Crop) -->
+    <path d="M 226 185 Q 220 120 255 95 Q 300 80 345 95 Q 380 120 374 185 Q 365 155 340 140 Q 300 135 260 140 Q 235 155 226 185 Z" fill="url(#hairGrad)" />
+    <!-- Textured Hair Highlights -->
+    <path d="M 245 105 Q 275 88 305 88 Q 335 88 355 105" stroke="#473e3a" stroke-width="4" fill="none" stroke-linecap="round" />
+    <path d="M 260 120 Q 300 102 340 120" stroke="#38302c" stroke-width="3" fill="none" stroke-linecap="round" />
+
+    <!-- Eyebrows -->
+    <!-- Left Eyebrow -->
+    <path d="M 252 205 Q 270 198 286 204" stroke="#1c1613" stroke-width="4.5" stroke-linecap="round" fill="none" />
+    <!-- Right Eyebrow -->
+    <path d="M 314 204 Q 330 198 348 205" stroke="#1c1613" stroke-width="4.5" stroke-linecap="round" fill="none" />
+
+    <!-- Eyes -->
+    <!-- Left Eye -->
+    <ellipse cx="270" cy="220" rx="11" ry="6.5" fill="#f8fafc" />
+    <circle cx="271" cy="220" r="5" fill="#2d1c12" />
+    <circle cx="271" cy="220" r="2.5" fill="#0f0906" />
+    <circle cx="273" cy="218" r="1.5" fill="#ffffff" />
+    <path d="M 258 218 Q 270 213 282 218" stroke="#1c1613" stroke-width="2" fill="none" />
+
+    <!-- Right Eye -->
+    <ellipse cx="330" cy="220" rx="11" ry="6.5" fill="#f8fafc" />
+    <circle cx="329" cy="220" r="5" fill="#2d1c12" />
+    <circle cx="329" cy="220" r="2.5" fill="#0f0906" />
+    <circle cx="331" cy="218" r="1.5" fill="#ffffff" />
+    <path d="M 318 218 Q 330 213 342 218" stroke="#1c1613" stroke-width="2" fill="none" />
+
+    <!-- Nose -->
+    <path d="M 300 215 L 297 248 Q 290 255 300 257 Q 310 255 303 248" stroke="#9a5a2a" stroke-width="2" fill="none" stroke-linecap="round" />
+    <ellipse cx="293" cy="254" rx="2" ry="1.5" fill="#7a3f18" />
+    <ellipse cx="307" cy="254" rx="2" ry="1.5" fill="#7a3f18" />
+
+    <!-- Facial Hair: Neat Mustache & Chin Beard -->
+    <!-- Mustache -->
+    <path d="M 285 268 Q 300 263 315 268 Q 300 273 285 268 Z" fill="#251a14" opacity="0.85" />
+    
+    <!-- Mouth / Smile -->
+    <path d="M 284 278 Q 300 288 316 278" stroke="#7a3219" stroke-width="2.5" stroke-linecap="round" fill="none" />
+    <path d="M 288 278 Q 300 284 312 278" fill="#ffffff" opacity="0.9" />
+
+    <!-- Soul Patch & Light Chin Beard -->
+    <ellipse cx="300" cy="290" rx="4" ry="3" fill="#251a14" opacity="0.6" />
+    <path d="M 280 298 Q 300 306 320 298" stroke="#251a14" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.6" />
+  </g>
+</svg>

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="avBg" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#222a3a" />
+      <stop offset="60%" stop-color="#0e131d" />
+      <stop offset="100%" stop-color="#05070a" />
+    </radialGradient>
+    <linearGradient id="avSuit" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0b0f19" />
+    </linearGradient>
+    <linearGradient id="avShirt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e0f2fe" />
+      <stop offset="100%" stop-color="#7dd3fc" />
+    </linearGradient>
+    <linearGradient id="avSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4976a" />
+      <stop offset="100%" stop-color="#a46132" />
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="400" fill="url(#avBg)" />
+
+  <!-- Shoulders & Dark Suit Jacket -->
+  <path d="M 40 400 L 70 280 Q 140 220 200 220 Q 260 220 330 280 L 360 400 Z" fill="url(#avSuit)" />
+  <!-- Light Blue Shirt -->
+  <polygon points="160,220 240,220 225,400 175,400" fill="url(#avShirt)" />
+  <!-- Shirt Collar -->
+  <polygon points="160,220 200,265 180,275 145,230" fill="#f0f9ff" />
+  <polygon points="240,220 200,265 220,275 255,230" fill="#bae6fd" />
+
+  <!-- Lapels -->
+  <polygon points="85,290 145,225 160,300 110,400" fill="#2d3748" />
+  <polygon points="315,290 255,225 240,300 290,400" fill="#2d3748" />
+
+  <!-- Neck -->
+  <path d="M 175 190 L 175 240 Q 200 255 225 240 L 225 190 Z" fill="#b47443" />
+
+  <!-- Head -->
+  <!-- Ears -->
+  <ellipse cx="140" cy="155" rx="12" ry="18" fill="#c68352" />
+  <circle cx="136" cy="165" r="2.5" fill="#f1f5f9" />
+  <ellipse cx="260" cy="155" rx="12" ry="18" fill="#c68352" />
+
+  <!-- Face -->
+  <path d="M 148 135 Q 145 80 200 78 Q 255 80 252 135 Q 252 185 230 205 Q 200 220 170 205 Q 148 185 148 135 Z" fill="url(#avSkin)" />
+
+  <!-- Hair -->
+  <path d="M 138 115 Q 130 55 165 35 Q 200 25 235 35 Q 270 55 262 115 Q 255 90 230 75 Q 200 70 170 75 Q 148 90 138 115 Z" fill="#141110" />
+
+  <!-- Eyebrows -->
+  <path d="M 160 132 Q 175 126 190 132" stroke="#1c1613" stroke-width="4" stroke-linecap="round" fill="none" />
+  <path d="M 210 132 Q 225 126 240 132" stroke="#1c1613" stroke-width="4" stroke-linecap="round" fill="none" />
+
+  <!-- Eyes -->
+  <ellipse cx="175" cy="144" rx="8" ry="5.5" fill="#f8fafc" />
+  <circle cx="176" cy="144" r="4" fill="#1f140e" />
+  <circle cx="177" cy="143" r="1.2" fill="#ffffff" />
+
+  <ellipse cx="225" cy="144" rx="8" ry="5.5" fill="#f8fafc" />
+  <circle cx="224" cy="144" r="4" fill="#1f140e" />
+  <circle cx="225" cy="143" r="1.2" fill="#ffffff" />
+
+  <!-- Nose -->
+  <path d="M 200 142 L 198 165 Q 192 170 200 172 Q 208 170 202 165" stroke="#9a5a2a" stroke-width="1.8" fill="none" stroke-linecap="round" />
+
+  <!-- Mustache & Smile -->
+  <path d="M 188 180 Q 200 176 212 180 Q 200 184 188 180 Z" fill="#251a14" opacity="0.85" />
+  <path d="M 188 189 Q 200 198 212 189" stroke="#7a3219" stroke-width="2" stroke-linecap="round" fill="none" />
+  <ellipse cx="200" cy="198" rx="3" ry="2" fill="#251a14" opacity="0.6" />
+</svg>

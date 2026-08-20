@@ -11,6 +11,7 @@ import {
   Terminal,
 } from 'lucide-react';
 import { profileData } from '../data/profile';
+import { useProfilePhoto } from '../utils/photoManager';
 
 interface NavbarProps {
   onOpenResume: () => void;
@@ -27,6 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   isDarkMode,
   onToggleTheme,
 }) => {
+  const { avatarUrl } = useProfilePhoto();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
@@ -88,12 +90,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           aria-label="Kishor S V Home"
         >
           <div className="relative">
-            <div className="w-10 h-10 rounded-xl p-0.5 bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 shadow-md group-hover:scale-105 transition-transform flex items-center justify-center">
-              <div className="w-full h-full rounded-[10px] bg-neutral-950 flex items-center justify-center border border-white/10">
-                <span className="font-display font-black text-sm tracking-tighter bg-gradient-to-r from-indigo-300 via-white to-cyan-300 bg-clip-text text-transparent">
-                  K
-                </span>
-              </div>
+            <div className="w-10 h-10 rounded-xl p-0.5 bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 shadow-md group-hover:scale-105 transition-transform overflow-hidden">
+              <img
+                src={avatarUrl || "/kishor-avatar.svg"}
+                alt={profileData.name}
+                className="w-full h-full object-cover object-top rounded-[10px]"
+                referrerPolicy="no-referrer"
+              />
             </div>
             <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-[#020204] rounded-full shadow-[0_0_8px_#10b981]" />
           </div>

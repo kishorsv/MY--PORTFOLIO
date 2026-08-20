@@ -15,7 +15,7 @@ import {
   Terminal,
 } from 'lucide-react';
 import { profileData } from '../data/profile';
-import { MotionProfilePhoto } from '../components/MotionProfilePhoto';
+import { ProfessionalProfile } from '../components/ProfessionalProfile';
 
 interface HeroSectionProps {
   onOpenResume: () => void;
@@ -229,15 +229,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenResume, onOpenAi
               </motion.div>
             </div>
 
-            {/* Right Column: 3D Motion Profile Photo */}
-            <div className="lg:col-span-5 flex justify-center items-center mt-6 lg:mt-0">
+            {/* Right Column: 3D Motion Professional Profile with Ambient Backlight Anchor */}
+            <div className="lg:col-span-5 flex justify-center items-center mt-6 lg:mt-0 relative">
+              {/* Specialized Ambient Volumetric Backlight Spot */}
+              <div className="absolute -inset-10 bg-gradient-to-tr from-indigo-500/20 via-purple-500/20 to-cyan-500/20 rounded-full blur-3xl opacity-70 pointer-events-none -z-10" />
+
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="w-full flex justify-center"
               >
-                <MotionProfilePhoto variant="hero" />
+                <ProfessionalProfile />
               </motion.div>
             </div>
           </div>

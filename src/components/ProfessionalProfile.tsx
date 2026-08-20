@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'motion/react';
 import {
   Sparkles,
@@ -12,23 +12,19 @@ import {
   Link as LinkIcon,
   ShieldCheck,
   Code2,
-  Terminal,
   Cpu,
-  Download,
-  ExternalLink,
   Layers,
+  Terminal,
 } from 'lucide-react';
 import { profileData } from '../data/profile';
 import { useProfilePhoto } from '../utils/photoManager';
 
-interface MotionProfilePhotoProps {
-  variant?: 'hero' | 'about' | 'compact';
+interface ProfessionalProfileProps {
   className?: string;
   showBadges?: boolean;
 }
 
-export const MotionProfilePhoto: React.FC<MotionProfilePhotoProps> = ({
-  variant = 'hero',
+export const ProfessionalProfile: React.FC<ProfessionalProfileProps> = ({
   className = '',
   showBadges = true,
 }) => {
@@ -41,51 +37,54 @@ export const MotionProfilePhoto: React.FC<MotionProfilePhotoProps> = ({
 
   const activePhoto = photoUrl || '/kishor-portrait.svg';
 
-  // 3D Tilt & Multi-layer Parallax Motion Values
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
+  // Framer Motion 3D Tilt & Parallax Physics
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
-  const mouseXSpring = useSpring(x, { stiffness: 220, damping: 22 });
-  const mouseYSpring = useSpring(y, { stiffness: 220, damping: 22 });
+  // Smooth springs for fluid, premium mouse tracking
+  const springConfig = { stiffness: 260, damping: 24, mass: 0.8 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
 
-  // 3D rotation transforms
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['9deg', '-9deg']);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-9deg', '9deg']);
+  // 3D Card Tilting angles (subtle & responsive)
+  const rotateX = useTransform(smoothY, [-0.5, 0.5], ['10deg', '-10deg']);
+  const rotateY = useTransform(smoothX, [-0.5, 0.5], ['-10deg', '10deg']);
 
-  // Parallax layers
-  const photoParallaxX = useTransform(mouseXSpring, [-0.5, 0.5], ['-8px', '8px']);
-  const photoParallaxY = useTransform(mouseYSpring, [-0.5, 0.5], ['-8px', '8px']);
-  
-  const badge1ParallaxX = useTransform(mouseXSpring, [-0.5, 0.5], ['14px', '-14px']);
-  const badge1ParallaxY = useTransform(mouseYSpring, [-0.5, 0.5], ['14px', '-14px']);
-  
-  const badge2ParallaxX = useTransform(mouseXSpring, [-0.5, 0.5], ['-16px', '16px']);
-  const badge2ParallaxY = useTransform(mouseYSpring, [-0.5, 0.5], ['-16px', '16px']);
+  // Parallax layers (image moves opposite to the frame for deep optical depth)
+  const imgParallaxX = useTransform(smoothX, [-0.5, 0.5], ['-12px', '12px']);
+  const imgParallaxY = useTransform(smoothY, [-0.5, 0.5], ['-12px', '12px']);
 
-  // Dynamic specular lighting position
-  const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ['10%', '90%']);
-  const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ['10%', '90%']);
+  // Subtle floating badges parallax
+  const badge1X = useTransform(smoothX, [-0.5, 0.5], ['16px', '-16px']);
+  const badge1Y = useTransform(smoothY, [-0.5, 0.5], ['14px', '-14px']);
+
+  const badge2X = useTransform(smoothX, [-0.5, 0.5], ['-18px', '18px']);
+  const badge2Y = useTransform(smoothY, [-0.5, 0.5], ['-16px', '16px']);
+
+  // Multi-layered mouse tracking for dynamic backlighting & ambient aura
+  const auraTranslateX = useTransform(smoothX, [-0.5, 0.5], ['-35px', '35px']);
+  const auraTranslateY = useTransform(smoothY, [-0.5, 0.5], ['-35px', '35px']);
+  const auraRotate = useTransform(smoothX, [-0.5, 0.5], [-12, 12]);
+  const auraScale = useTransform(smoothY, [-0.5, 0.5], [1.15, 0.95]);
+
+  // Specular lighting reflection follows cursor
+  const glareX = useTransform(smoothX, [-0.5, 0.5], ['15%', '85%']);
+  const glareY = useTransform(smoothY, [-0.5, 0.5], ['15%', '85%']);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
+    const xPct = (e.clientX - rect.left) / rect.width - 0.5;
+    const yPct = (e.clientY - rect.top) / rect.height - 0.5;
 
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
-
-    x.set(xPct);
-    y.set(yPct);
+    mouseX.set(xPct);
+    mouseY.set(yPct);
   };
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    x.set(0);
-    y.set(0);
+    mouseX.set(0);
+    mouseY.set(0);
   };
 
   const handleSavePhotoUrl = (url: string) => {
@@ -109,64 +108,55 @@ export const MotionProfilePhoto: React.FC<MotionProfilePhotoProps> = ({
     }
   };
 
-  const handleResetPhoto = () => {
-    resetPhoto();
-  };
-
-  if (variant === 'compact') {
-    return (
-      <div className={`relative inline-block ${className}`}>
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="relative w-12 h-12 rounded-2xl overflow-hidden p-0.5 bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 shadow-md cursor-pointer"
-          onClick={() => setShowModal(true)}
-        >
-          <img
-            src={activePhoto}
-            alt={profileData.name}
-            className="w-full h-full object-cover rounded-[14px]"
-            referrerPolicy="no-referrer"
-          />
-        </motion.div>
-        <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#020204] rounded-full" />
-      </div>
-    );
-  }
-
-  const isHero = variant === 'hero';
-
   return (
     <>
       <div
         className={`relative select-none flex items-center justify-center ${className}`}
         style={{ perspective: 1200 }}
       >
-        {/* Ambient Pulsing Glow Underneath */}
+        {/* Cursor-Interactive Volumetric Backlight & Ambient Glow */}
+        <motion.div
+          style={{
+            x: auraTranslateX,
+            y: auraTranslateY,
+            rotate: auraRotate,
+            scale: auraScale,
+          }}
+          className="absolute -inset-12 pointer-events-none transition-all duration-300"
+        >
+          {/* Deep Indigo Core Backlight */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-indigo-600/50 via-purple-600/35 to-cyan-400/40 rounded-[56px] blur-3xl" />
+          
+          {/* Intense Focused Spotlight behind card center */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-80 bg-gradient-to-b from-indigo-500/60 via-cyan-400/30 to-purple-600/40 rounded-full blur-2xl opacity-80" />
+        </motion.div>
+
+        {/* Pulsing Ambient Ambient Rim Glow */}
         <motion.div
           animate={{
-            scale: [1, 1.08, 1],
+            scale: [0.98, 1.05, 0.98],
             opacity: [0.3, 0.5, 0.3],
           }}
           transition={{
-            duration: 4.5,
+            duration: 4,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute -inset-6 bg-gradient-to-tr from-indigo-600/30 via-purple-600/20 to-cyan-500/30 rounded-[44px] blur-3xl pointer-events-none"
+          className="absolute -inset-6 bg-gradient-to-r from-indigo-500/30 via-cyan-500/25 to-purple-500/30 rounded-3xl blur-2xl pointer-events-none"
         />
 
-        {/* Orbiting Tech Ring with Particles */}
+        {/* Orbiting Dark Futuristic Accent Rings */}
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-          className="absolute -inset-8 rounded-full border border-indigo-500/15 pointer-events-none hidden sm:block"
+          transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}
+          className="absolute -inset-10 rounded-full border border-indigo-500/15 pointer-events-none hidden sm:block"
         >
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_12px_#22d3ee]" />
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rounded-full bg-purple-400 shadow-[0_0_10px_#c084fc]" />
-          <div className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-indigo-400 shadow-[0_0_8px_#818cf8]" />
+          <div className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-indigo-400 shadow-[0_0_10px_#818cf8]" />
         </motion.div>
 
-        {/* Outer Motion Card Frame */}
+        {/* 3D Interactive Parallax Card Frame */}
         <motion.div
           ref={cardRef}
           onMouseMove={handleMouseMove}
@@ -179,50 +169,48 @@ export const MotionProfilePhoto: React.FC<MotionProfilePhotoProps> = ({
             transformStyle: 'preserve-3d',
           }}
           whileHover={{ scale: 1.025 }}
-          transition={{ type: 'spring', stiffness: 320, damping: 22 }}
-          className={`relative z-10 cursor-pointer rounded-3xl p-1.5 bg-gradient-to-br from-indigo-500/30 via-white/10 to-cyan-500/20 border border-white/20 backdrop-blur-xl shadow-2xl overflow-hidden group ${
-            isHero ? 'w-[290px] sm:w-[350px] md:w-[380px]' : 'w-[260px] sm:w-[320px]'
-          }`}
+          transition={{ type: 'spring', stiffness: 340, damping: 24 }}
+          className="relative z-10 cursor-pointer rounded-3xl p-1.5 bg-gradient-to-br from-indigo-500/35 via-white/10 to-cyan-500/25 border border-white/20 backdrop-blur-xl shadow-2xl overflow-hidden group w-[290px] sm:w-[350px] md:w-[380px]"
         >
-          {/* Inner Photo Frame with Parallax Inner Canvas */}
+          {/* Inner Photo Container */}
           <div className="relative w-full aspect-[3/4] rounded-[22px] overflow-hidden bg-neutral-950">
-            {/* Parallax Photo Layer */}
+            {/* Parallax Image Layer */}
             <motion.div
               style={{
-                x: photoParallaxX,
-                y: photoParallaxY,
-                scale: 1.08,
+                x: imgParallaxX,
+                y: imgParallaxY,
+                scale: 1.1,
               }}
               className="absolute inset-0 w-full h-full"
             >
               <img
                 src={activePhoto}
                 alt={profileData.name}
-                className="w-full h-full object-cover object-top filter brightness-[1.02] contrast-[1.04] transition-all duration-700 ease-out group-hover:scale-105"
+                className="w-full h-full object-cover object-top filter brightness-[1.03] contrast-[1.05] transition-all duration-700 ease-out group-hover:scale-105"
                 referrerPolicy="no-referrer"
               />
             </motion.div>
 
-            {/* Continuous Slow-Moving Holographic Gradient Shimmer Overlay */}
+            {/* Glowing Futuristic Holographic Gradient Overlay */}
             <div
               className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-60 group-hover:opacity-85 transition-opacity duration-500"
               style={{
                 background:
-                  'linear-gradient(120deg, rgba(99,102,241,0.3) 0%, rgba(168,85,247,0.15) 30%, rgba(6,182,212,0.25) 60%, rgba(99,102,241,0.3) 100%)',
+                  'linear-gradient(135deg, rgba(99,102,241,0.35) 0%, rgba(168,85,247,0.2) 35%, rgba(6,182,212,0.3) 70%, rgba(99,102,241,0.35) 100%)',
                 backgroundSize: '250% 250%',
                 animation: 'gradientMove 8s ease infinite',
               }}
             />
 
-            {/* Subtle Vignette & Contrast Gradients */}
-            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-transparent opacity-85 pointer-events-none" />
+            {/* Depth Vignette Gradients */}
+            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/25 to-transparent opacity-90 pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/40 via-transparent to-transparent pointer-events-none" />
 
-            {/* Dynamic Interactive Glare / Specular Highlight */}
+            {/* Cursor-Reactive Specular Flare / Glow */}
             <motion.div
               className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-60 transition-opacity duration-300"
               style={{
-                background: `radial-gradient(450px circle at ${glareX} ${glareY}, rgba(255,255,255,0.45), rgba(99,102,241,0.15) 40%, transparent 70%)`,
+                background: `radial-gradient(420px circle at ${glareX} ${glareY}, rgba(255,255,255,0.45), rgba(99,102,241,0.2) 40%, transparent 70%)`,
               }}
             />
 
@@ -232,7 +220,7 @@ export const MotionProfilePhoto: React.FC<MotionProfilePhotoProps> = ({
             <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-cyan-400/80 pointer-events-none transition-transform duration-300 group-hover:scale-110" />
             <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-cyan-400/80 pointer-events-none transition-transform duration-300 group-hover:scale-110" />
 
-            {/* Top Status Header Tag */}
+            {/* Top HUD Status Badges */}
             <div className="absolute top-3 left-4 right-4 flex items-center justify-between pointer-events-none">
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-950/80 backdrop-blur-md border border-white/15 text-[10px] font-mono text-gray-300 shadow-sm">
                 <Cpu className="w-3 h-3 text-indigo-400" />
@@ -244,7 +232,7 @@ export const MotionProfilePhoto: React.FC<MotionProfilePhotoProps> = ({
               </div>
             </div>
 
-            {/* Interactive Hover Prompt Overlay */}
+            {/* Hover Prompt Glass Overlay */}
             <div className="absolute inset-0 bg-neutral-950/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-2.5 p-4 text-white">
               <div className="p-3.5 rounded-2xl bg-indigo-600/40 backdrop-blur-md border border-indigo-400/50 shadow-xl transform group-hover:scale-110 transition-transform">
                 <Eye className="w-6 h-6 text-white" />
@@ -278,14 +266,14 @@ export const MotionProfilePhoto: React.FC<MotionProfilePhotoProps> = ({
           </div>
         </motion.div>
 
-        {/* Parallax Floating Badges */}
+        {/* Floating Parallax Badges */}
         {showBadges && (
           <>
-            {/* Top-Right Floating Badge: AI & LLM Specialist */}
+            {/* Top-Right Floating Badge */}
             <motion.div
               style={{
-                x: badge1ParallaxX,
-                y: badge1ParallaxY,
+                x: badge1X,
+                y: badge1Y,
               }}
               animate={{
                 y: [-6, 6, -6],
@@ -302,17 +290,17 @@ export const MotionProfilePhoto: React.FC<MotionProfilePhotoProps> = ({
                   <Sparkles className="w-4 h-4 animate-pulse" />
                 </div>
                 <div>
-                  <p className="text-[10px] text-gray-400 uppercase font-mono tracking-wider">Focus</p>
+                  <p className="text-[10px] text-gray-400 uppercase font-mono tracking-wider">Specialization</p>
                   <p className="text-xs font-extrabold text-white">Generative AI &amp; ML</p>
                 </div>
               </div>
             </motion.div>
 
-            {/* Bottom-Left Floating Badge: 15+ Live Projects */}
+            {/* Bottom-Left Floating Badge */}
             <motion.div
               style={{
-                x: badge2ParallaxX,
-                y: badge2ParallaxY,
+                x: badge2X,
+                y: badge2Y,
               }}
               animate={{
                 y: [6, -6, 6],
@@ -330,7 +318,7 @@ export const MotionProfilePhoto: React.FC<MotionProfilePhotoProps> = ({
                   <Zap className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-[10px] text-gray-400 uppercase font-mono tracking-wider">Delivered</p>
+                  <p className="text-[10px] text-gray-400 uppercase font-mono tracking-wider">Status</p>
                   <p className="text-xs font-extrabold text-white">15+ Live Deployments</p>
                 </div>
               </div>
@@ -434,7 +422,7 @@ export const MotionProfilePhoto: React.FC<MotionProfilePhotoProps> = ({
                       {/* Reset to Default */}
                       {photoUrl !== '/kishor-portrait.svg' && (
                         <button
-                          onClick={handleResetPhoto}
+                          onClick={resetPhoto}
                           className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-rose-400 hover:bg-rose-500/10 text-xs font-semibold cursor-pointer transition-colors"
                           title="Reset to default portrait"
                         >
