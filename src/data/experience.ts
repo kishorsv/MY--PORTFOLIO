@@ -6,18 +6,18 @@ export const experienceTimeline: TimelineItem[] = [
     year: "2022",
     title: "Started Programming Journey",
     roleOrContext: "Foundations in Core Computer Science",
-    description: "Began coding with Python and Java. Built foundational understanding of algorithms, object-oriented programming, data structures, and command-line automation tools.",
+    description: "Began coding with Python. Built foundational understanding of algorithms, object-oriented programming, data structures, and command-line automation tools.",
     icon: "Terminal",
-    skills: ["Python", "Java", "Data Structures", "Algorithms", "Git Basics"]
+    skills: ["Python", "Data Structures", "Algorithms", "Problem Solving", "Git Basics"]
   },
   {
     id: "learned-web-dev",
     year: "2023",
     title: "Web & Frontend Development Foundations",
     roleOrContext: "Responsive UI & Backend Systems",
-    description: "Built strong foundations in HTML5, CSS3, Bootstrap grid layouts, Java programming, RESTful API design, and relational SQL database integrations.",
+    description: "Built strong foundations in HTML5, CSS3, Bootstrap grid layouts, backend APIs, and relational SQL database integrations.",
     icon: "Layout",
-    skills: ["HTML5", "CSS3", "Bootstrap", "Java", "SQL", "REST APIs"]
+    skills: ["HTML5", "CSS3", "Bootstrap", "Python APIs", "SQL", "REST APIs"]
   },
   {
     id: "ai-ml-journey",

@@ -95,11 +95,17 @@ export interface CertificateItem {
   title: string;
   issuer: string;
   issueDate: string;
+  completedDate?: string;
   credentialId: string;
-  verificationUrl: string;
+  verificationUrl?: string;
   image: string;
-  category: 'AI' | 'Machine Learning' | 'Development' | 'Cloud' | 'Git/GitHub' | 'Data' | 'Other';
+  category: 'AI & Generative AI' | 'Web Development' | 'Data Science' | 'Data Analysis' | 'GitHub & Development' | 'Achievements';
+  type: 'Professional Certificate' | 'Course Completion Certificate' | 'Training Certificate' | 'Community Achievement / Badge';
   skills: string[];
+  verified: boolean;
+  issuerLogo?: string;
+  accentColor?: string;
+  recognition?: string;
 }
 
 export interface GithubRepoItem {

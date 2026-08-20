@@ -8,29 +8,28 @@ export const githubData: GithubStatsData = {
   totalStars: 1,
   totalContributions: 15,
   topLanguages: [
-    { name: "Python", percentage: 55, color: "#3572A5" },
+    { name: "Python", percentage: 65, color: "#3572A5" },
     { name: "HTML & CSS", percentage: 20, color: "#e34c26" },
-    { name: "SQL & Cloud", percentage: 15, color: "#336791" },
-    { name: "Java", percentage: 10, color: "#b07219" }
+    { name: "SQL & Relational DB", percentage: 15, color: "#336791" }
   ],
   featuredRepos: [
     {
       name: "MY--PORTFOLIO",
-      description: "Personal AI & Full-Stack developer portfolio showcasing interactive 3D motion, live GitHub sync, and projects.",
-      language: "TypeScript",
+      description: "Personal AI & Developer portfolio showcasing interactive responsive layout, live GitHub sync, and projects.",
+      language: "Python / Web",
       stars: 1,
       forks: 0,
       url: "https://github.com/kishorsv/MY--PORTFOLIO",
-      topics: ["portfolio", "react", "python", "full-stack", "sql"]
+      topics: ["portfolio", "python", "html-css", "bootstrap", "sql"]
     },
     {
       name: "next-platform-starter",
-      description: "Starter architecture for scalable web platform development with modern responsive layouts and cloud endpoints.",
-      language: "JavaScript",
+      description: "Starter architecture for scalable web platform development with Bootstrap grid responsive layouts and backend endpoints.",
+      language: "HTML / CSS",
       stars: 1,
       forks: 0,
       url: "https://github.com/kishorsv/next-platform-starter",
-      topics: ["web", "bootstrap", "javascript", "full-stack"]
+      topics: ["web", "bootstrap", "html5", "css3"]
     },
     {
       name: "ai-health-assistant",

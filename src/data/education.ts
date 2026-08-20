@@ -15,7 +15,7 @@ export const educationData: EducationItem = {
     "Deep Neural Networks & Computer Vision",
     "Natural Language Processing & LLMs",
     "Database Management Systems (DBMS) & SQL",
-    "Object-Oriented Software Engineering (Java & Python)",
+    "Object-Oriented Software Engineering & System Architecture",
     "Cloud Computing & Distributed Systems",
     "Operating Systems & Computer Networks",
     "Web Technologies & Full-Stack Architecture"

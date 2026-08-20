@@ -94,7 +94,7 @@ export const AiAssistantDrawer: React.FC<AiAssistantDrawerProps> = ({ isOpen, on
       const fallbackMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: 'ai',
-        text: `Kishor S V is an AI/ML and Web Developer with advanced expertise in Python, Generative AI (Gemini API), HTML5, CSS3, Bootstrap grid layouts, Java, and SQL/Cloud systems. You can connect directly via email at ${profileData.socials.email} or explore his projects on GitHub!`,
+        text: `Kishor S V is an AI/ML and Web Developer with advanced expertise in Python, Generative AI (Gemini API), HTML5, CSS3, Bootstrap grid layouts, and SQL/Cloud systems. You can connect directly via email at ${profileData.socials.email} or explore his projects on GitHub!`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, fallbackMsg]);

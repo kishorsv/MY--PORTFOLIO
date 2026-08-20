@@ -9,20 +9,8 @@ export const skillCategories: SkillCategory[] = [
       {
         name: "Python",
         icon: "Terminal",
-        description: "Primary advanced language for AI/ML engineering, PyTorch, data science pipelines, FastAPI, algorithms, and backend scripting.",
+        description: "Primary advanced programming language for AI/ML engineering, PyTorch, data science pipelines, FastAPI, algorithms, and backend scripting.",
         level: "Advanced"
-      },
-      {
-        name: "Java",
-        icon: "Coffee",
-        description: "Object-oriented programming fundamentals, core Data Structures & Algorithms, and application architecture.",
-        level: "Proficient"
-      },
-      {
-        name: "JavaScript",
-        icon: "FileCode",
-        description: "Web scripting basics, DOM event handling, dynamic UI rendering, and client-server communication.",
-        level: "Proficient"
       }
     ]
   },
@@ -87,10 +75,10 @@ export const skillCategories: SkillCategory[] = [
         level: "Advanced"
       },
       {
-        name: "Java / JS Web Integration",
-        icon: "Code2",
-        description: "Dynamic DOM manipulation, client-side interactions, UI state handling, and interactive frontend features.",
-        level: "Proficient"
+        name: "Responsive Web UI",
+        icon: "Layout",
+        description: "Mobile-first layouts, cross-browser compatibility, modern UI components, and accessible user interfaces.",
+        level: "Advanced"
       }
     ]
   },
@@ -100,9 +88,9 @@ export const skillCategories: SkillCategory[] = [
     icon: "Server",
     skills: [
       {
-        name: "Python FastAPI / Node.js",
+        name: "Python FastAPI & Backend Services",
         icon: "ServerCog",
-        description: "High-throughput servers, async endpoint routing, middleware pipelines, and API controller architectures.",
+        description: "High-throughput asynchronous APIs, endpoint routing, middleware pipelines, and controller architectures.",
         level: "Advanced"
       },
       {
