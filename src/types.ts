@@ -102,16 +102,6 @@ export interface CertificateItem {
   skills: string[];
 }
 
-export interface AchievementItem {
-  id: string;
-  title: string;
-  category: 'Hackathon' | 'Coding' | 'Project' | 'Award' | 'Community' | 'Sports';
-  date: string;
-  description: string;
-  icon: string;
-  highlight?: string;
-}
-
 export interface GithubRepoItem {
   name: string;
   description: string;

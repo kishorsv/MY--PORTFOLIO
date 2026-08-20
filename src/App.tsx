@@ -15,7 +15,6 @@ import { ProjectsSection } from './sections/ProjectsSection';
 import { ExperienceSection } from './sections/ExperienceSection';
 import { EducationSection } from './sections/EducationSection';
 import { CertificationsSection } from './sections/CertificationsSection';
-import { AchievementsSection } from './sections/AchievementsSection';
 import { GithubSection } from './sections/GithubSection';
 import { ContactSection } from './sections/ContactSection';
 
@@ -98,8 +97,6 @@ export function App() {
         <EducationSection />
 
         <CertificationsSection />
-
-        <AchievementsSection />
 
         <GithubSection />
 

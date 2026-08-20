@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   Github,
   GitFork,
@@ -8,38 +8,100 @@ import {
   Activity,
   ExternalLink,
   Code2,
+  RefreshCw,
+  SlidersHorizontal,
+  Check,
+  X,
+  Sparkles,
 } from 'lucide-react';
 import { SectionHeading } from '../components/SectionHeading';
 import { githubData } from '../data/github';
+import { GithubStatsData } from '../types';
+
+const STORAGE_KEY = 'kishor_github_stats_override';
 
 export const GithubSection: React.FC = () => {
-  const [stats, setStats] = useState(githubData);
+  const [stats, setStats] = useState<GithubStatsData>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        return { ...githubData, ...JSON.parse(saved) };
+      }
+    } catch {
+      // fallback
+    }
+    return githubData;
+  });
+
   const [loading, setLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    totalContributions: stats.totalContributions,
+    totalStars: stats.totalStars,
+    publicRepos: stats.publicRepos,
+    followers: stats.followers,
+    following: stats.following,
+  });
+  const [syncStatus, setSyncStatus] = useState<string | null>(null);
+
+  const fetchGithub = async () => {
+    try {
+      setLoading(true);
+      setSyncStatus('Fetching live GitHub data...');
+      const res = await fetch('/api/github-profile');
+      const json = await res.json();
+      if (json.success && json.data) {
+        const updated: GithubStatsData = {
+          ...stats,
+          username: json.data.username || stats.username,
+          publicRepos: json.data.publicRepos ?? stats.publicRepos,
+          followers: json.data.followers ?? stats.followers,
+          following: json.data.following ?? stats.following,
+          totalStars: json.data.totalStars ?? stats.totalStars,
+          totalContributions: json.data.totalContributions ?? stats.totalContributions,
+          featuredRepos: json.data.repos && json.data.repos.length > 0 ? json.data.repos : stats.featuredRepos,
+        };
+        setStats(updated);
+        setEditForm({
+          totalContributions: updated.totalContributions,
+          totalStars: updated.totalStars,
+          publicRepos: updated.publicRepos,
+          followers: updated.followers,
+          following: updated.following,
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        setSyncStatus('Live data synced successfully!');
+      } else {
+        setSyncStatus('Using verified profile data.');
+      }
+    } catch {
+      setSyncStatus('Using cached profile data.');
+    } finally {
+      setLoading(false);
+      setTimeout(() => setSyncStatus(null), 3500);
+    }
+  };
 
   useEffect(() => {
-    // Graceful client check to live API proxy
-    const fetchGithub = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch('/api/github-profile');
-        const json = await res.json();
-        if (json.success && json.data) {
-          setStats((prev) => ({
-            ...prev,
-            publicRepos: json.data.public_repos || prev.publicRepos,
-            followers: json.data.followers || prev.followers,
-            following: json.data.following || prev.following,
-          }));
-        }
-      } catch {
-        // graceful fallback to curated data
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchGithub();
   }, []);
+
+  const handleSaveEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const updated: GithubStatsData = {
+      ...stats,
+      totalContributions: Number(editForm.totalContributions) || 0,
+      totalStars: Number(editForm.totalStars) || 0,
+      publicRepos: Number(editForm.publicRepos) || 0,
+      followers: Number(editForm.followers) || 0,
+      following: Number(editForm.following) || 0,
+    };
+    setStats(updated);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    setIsEditing(false);
+    setSyncStatus('Custom stats saved successfully!');
+    setTimeout(() => setSyncStatus(null), 3000);
+  };
 
   return (
     <section id="github" className="py-24 px-4 sm:px-6 lg:px-8 bg-neutral-950 relative">
@@ -63,21 +125,75 @@ export const GithubSection: React.FC = () => {
                 <Github className="w-7 h-7" />
               </div>
               <div>
-                <h3 className="text-xl font-bold font-display text-white">@{stats.username}</h3>
+                <div className="flex items-center gap-2.5">
+                  <h3 className="text-xl font-bold font-display text-white">@{stats.username}</h3>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live Synced
+                  </span>
+                </div>
                 <p className="text-xs text-gray-400 font-mono mt-0.5">AI/ML & Full-Stack Engineer on GitHub</p>
               </div>
             </div>
 
-            <a
-              href={`https://github.com/${stats.username}`}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 hover:bg-white/10 text-white text-xs font-semibold border border-white/10 transition-all shadow-sm backdrop-blur-sm"
-            >
-              <span>Follow on GitHub</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+            <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+              <button
+                type="button"
+                onClick={fetchGithub}
+                disabled={loading}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-xs font-semibold border border-white/10 transition-all disabled:opacity-50 cursor-pointer"
+                title="Sync Live Stats from GitHub"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-indigo-400' : ''}`} />
+                <span>{loading ? 'Syncing...' : 'Sync Live'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setEditForm({
+                    totalContributions: stats.totalContributions,
+                    totalStars: stats.totalStars,
+                    publicRepos: stats.publicRepos,
+                    followers: stats.followers,
+                    following: stats.following,
+                  });
+                  setIsEditing(true);
+                }}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 text-xs font-semibold border border-indigo-500/20 transition-all cursor-pointer"
+                title="Edit Stats Numbers"
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+                <span>Adjust Numbers</span>
+              </button>
+
+              <a
+                href={`https://github.com/${stats.username}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-neutral-950 hover:bg-gray-100 text-xs font-bold transition-all shadow-md ml-auto md:ml-0"
+              >
+                <span>Profile</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
           </div>
+
+          {/* Sync Status Banner */}
+          <AnimatePresence>
+            {syncStatus && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="pt-3 pb-1"
+              >
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-mono">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>{syncStatus}</span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Numerical metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6">
@@ -85,21 +201,21 @@ export const GithubSection: React.FC = () => {
               <p className="text-xs font-mono text-gray-400 flex items-center gap-1.5">
                 <BookMarked className="w-3.5 h-3.5 text-indigo-400" /> Public Repos
               </p>
-              <p className="text-2xl font-bold font-display text-white mt-1">{stats.publicRepos}+</p>
+              <p className="text-2xl font-bold font-display text-white mt-1">{stats.publicRepos}</p>
             </div>
 
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
               <p className="text-xs font-mono text-gray-400 flex items-center gap-1.5">
                 <Activity className="w-3.5 h-3.5 text-emerald-400" /> Total Contributions
               </p>
-              <p className="text-2xl font-bold font-display text-emerald-400 mt-1">{stats.totalContributions}+</p>
+              <p className="text-2xl font-bold font-display text-emerald-400 mt-1">{stats.totalContributions}</p>
             </div>
 
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
               <p className="text-xs font-mono text-gray-400 flex items-center gap-1.5">
                 <Star className="w-3.5 h-3.5 text-amber-400" /> Total Stars Earned
               </p>
-              <p className="text-2xl font-bold font-display text-amber-400 mt-1">{stats.totalStars}+</p>
+              <p className="text-2xl font-bold font-display text-amber-400 mt-1">{stats.totalStars}</p>
             </div>
 
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
@@ -203,6 +319,130 @@ export const GithubSection: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Adjust Stats Modal */}
+      <AnimatePresence>
+        {isEditing && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-neutral-900 border border-white/10 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative"
+            >
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="absolute top-5 right-5 p-2 text-gray-400 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                  <SlidersHorizontal className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white font-display">Configure GitHub Metrics</h3>
+                  <p className="text-xs text-gray-400 font-mono">Set your exact contributions and stars count</p>
+                </div>
+              </div>
+
+              <form onSubmit={handleSaveEdit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-mono text-gray-300 mb-1.5">
+                    Total Contributions Count
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={editForm.totalContributions}
+                    onChange={(e) => setEditForm({ ...editForm, totalContributions: Number(e.target.value) })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-gray-300 mb-1.5">
+                    Total Stars Earned
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={editForm.totalStars}
+                    onChange={(e) => setEditForm({ ...editForm, totalStars: Number(e.target.value) })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs font-mono text-gray-300 mb-1.5">
+                      Public Repos
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={editForm.publicRepos}
+                      onChange={(e) => setEditForm({ ...editForm, publicRepos: Number(e.target.value) })}
+                      className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-gray-300 mb-1.5">
+                      Followers
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={editForm.followers}
+                      onChange={(e) => setEditForm({ ...editForm, followers: Number(e.target.value) })}
+                      className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-gray-300 mb-1.5">
+                      Following
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={editForm.following}
+                      onChange={(e) => setEditForm({ ...editForm, following: Number(e.target.value) })}
+                      className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all shadow-md shadow-indigo-600/30"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Save & Update</span>
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
