@@ -44,29 +44,37 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   onNavigate
 }) => {
   const [zoomLevel, setZoomLevel] = useState<number>(1);
+  const [panPosition, setPanPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const [imageLoading, setImageLoading] = useState<boolean>(true);
   const [imageError, setImageError] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'image' | 'pdf'>('image');
   const modalContainerRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const touchStartXRef = useRef<number | null>(null);
+  const dragStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Reset zoom & loading states when cert changes
+  // Reset zoom & pan states when cert changes
   useEffect(() => {
     if (cert) {
       setZoomLevel(1);
+      setPanPosition({ x: 0, y: 0 });
       setImageLoading(true);
       setImageError(false);
       setActiveTab(cert.pdfUrl ? 'pdf' : 'image');
     }
   }, [cert?.id]);
 
-  // Keyboard navigation & escape listener
+  // Keyboard shortcuts listener
   useEffect(() => {
     if (!cert) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger if user is typing in an input
+      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
+
       if (e.key === 'Escape') {
         onClose();
       } else if (e.key === 'ArrowLeft') {
@@ -77,14 +85,16 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
         handleZoomIn();
       } else if (e.key === '-') {
         handleZoomOut();
-      } else if (e.key === '0') {
+      } else if (e.key === '0' || e.key.toLowerCase() === 'r') {
         handleZoomReset();
+      } else if (e.key.toLowerCase() === 'f') {
+        handleToggleFullscreen();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [cert, certificatesList]);
+  }, [cert, certificatesList, isFullscreen]);
 
   if (!cert) return null;
 
@@ -104,19 +114,67 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   };
 
   const handleZoomIn = () => {
-    setZoomLevel((prev) => Math.min(prev + 0.25, 2.5));
+    setZoomLevel((prev) => Math.min(Number((prev + 0.25).toFixed(2)), 3));
   };
 
   const handleZoomOut = () => {
-    setZoomLevel((prev) => Math.max(prev - 0.25, 0.6));
+    setZoomLevel((prev) => {
+      const next = Math.max(Number((prev - 0.25).toFixed(2)), 0.5);
+      if (next <= 1) setPanPosition({ x: 0, y: 0 });
+      return next;
+    });
   };
 
   const handleZoomReset = () => {
     setZoomLevel(1);
+    setPanPosition({ x: 0, y: 0 });
   };
 
   const handleToggleFullscreen = () => {
     setIsFullscreen((prev) => !prev);
+  };
+
+  const handleImageDoubleClick = (e: React.MouseEvent) => {
+    if (zoomLevel > 1) {
+      handleZoomReset();
+    } else {
+      setZoomLevel(1.85);
+    }
+  };
+
+  // Pan dragging handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (activeTab !== 'image') return;
+    setIsDragging(true);
+    dragStartRef.current = {
+      x: e.clientX - panPosition.x,
+      y: e.clientY - panPosition.y,
+    };
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    setPanPosition({
+      x: e.clientX - dragStartRef.current.x,
+      y: e.clientY - dragStartRef.current.y,
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Mouse wheel zoom
+  const handleWheel = (e: React.WheelEvent) => {
+    if (activeTab !== 'image') return;
+    if (e.ctrlKey || Math.abs(e.deltaY) > 20) {
+      if (e.deltaY < 0) {
+        handleZoomIn();
+      } else {
+        handleZoomOut();
+      }
+    }
   };
 
   const handleCopy = () => {
@@ -133,13 +191,33 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
     window.print();
   };
 
-  // Touch gesture handling
+  // Touch gesture handling for swipe between certs (when not zoomed/panning)
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartXRef.current = e.touches[0].clientX;
+    if (zoomLevel > 1) {
+      setIsDragging(true);
+      dragStartRef.current = {
+        x: e.touches[0].clientX - panPosition.x,
+        y: e.touches[0].clientY - panPosition.y,
+      };
+    } else {
+      touchStartXRef.current = e.touches[0].clientX;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (isDragging && zoomLevel > 1) {
+      setPanPosition({
+        x: e.touches[0].clientX - dragStartRef.current.x,
+        y: e.touches[0].clientY - dragStartRef.current.y,
+      });
+    }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartXRef.current === null) return;
+    if (isDragging) {
+      setIsDragging(false);
+    }
+    if (touchStartXRef.current === null || zoomLevel > 1) return;
     const touchEndX = e.changedTouches[0].clientX;
     const diff = touchStartXRef.current - touchEndX;
 
@@ -190,9 +268,12 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
           exit={{ opacity: 0, scale: 0.96, y: 15 }}
           transition={{ duration: 0.2 }}
           onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className={`relative w-full bg-neutral-950 border border-white/15 rounded-3xl shadow-2xl overflow-hidden text-gray-100 flex flex-col backdrop-blur-2xl transition-all duration-300 ${
-            isFullscreen ? 'max-w-[98vw] h-[96vh] my-1' : 'max-w-5xl my-4 max-h-[92vh]'
+          className={`bg-neutral-950 border border-white/15 shadow-2xl overflow-hidden text-gray-100 flex flex-col backdrop-blur-2xl transition-all duration-300 ${
+            isFullscreen
+              ? 'fixed inset-0 w-screen h-screen max-w-none max-h-none rounded-none z-[100] m-0 p-0'
+              : 'relative w-full rounded-3xl max-w-5xl my-4 max-h-[92vh]'
           }`}
         >
           {/* Top Header & Navigation Toolbar */}
@@ -349,12 +430,22 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             )}
 
             {/* Real Certificate Image Viewer Stage */}
-            <div className="relative w-full rounded-2xl bg-neutral-900/70 border border-white/10 overflow-hidden flex items-center justify-center min-h-[340px] sm:min-h-[480px] p-2 sm:p-4 shadow-2xl">
+            <div
+              ref={stageRef}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onWheel={handleWheel}
+              className={`relative w-full rounded-2xl bg-neutral-900/70 border border-white/10 overflow-hidden flex items-center justify-center min-h-[340px] sm:min-h-[500px] p-2 sm:p-4 shadow-2xl ${
+                isFullscreen ? 'h-[calc(100vh-280px)] sm:h-[calc(100vh-230px)]' : ''
+              } ${isDragging ? 'cursor-grabbing' : zoomLevel > 1 ? 'cursor-grab' : 'cursor-zoom-in'}`}
+            >
               {/* Image Loading Spinner */}
               {imageLoading && !imageError && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-neutral-950/80 backdrop-blur-sm z-10">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-neutral-950/80 backdrop-blur-sm z-10 pointer-events-none">
                   <div className="w-10 h-10 border-3 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
-                  <p className="text-xs font-mono text-gray-400">Loading certificate photo...</p>
+                  <p className="text-xs font-mono text-gray-400">Loading certificate document...</p>
                 </div>
               )}
 
@@ -387,7 +478,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                   className="w-full h-[520px] rounded-xl border border-white/10 bg-white"
                 />
               ) : (
-                <div className="overflow-auto max-w-full max-h-full flex items-center justify-center p-2">
+                <div className="w-full h-full flex items-center justify-center overflow-hidden p-2 select-none">
                   <motion.img
                     src={certificateImage}
                     alt={`${cert.title} Real Certificate Photo`}
@@ -396,32 +487,78 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                       setImageLoading(false);
                       setImageError(true);
                     }}
-                    animate={{ scale: zoomLevel }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                    className="w-full max-w-4xl h-auto rounded-xl shadow-2xl border border-white/10 object-contain origin-center select-none"
-                    style={{ transformOrigin: 'center center' }}
+                    onDoubleClick={handleImageDoubleClick}
+                    draggable={false}
+                    animate={{
+                      scale: zoomLevel,
+                      x: panPosition.x,
+                      y: panPosition.y,
+                    }}
+                    transition={
+                      isDragging
+                        ? { duration: 0 }
+                        : { type: 'spring', stiffness: 320, damping: 28 }
+                    }
+                    className="max-w-full max-h-full w-auto h-auto rounded-xl shadow-2xl border border-white/10 object-contain origin-center select-none pointer-events-auto"
                   />
                 </div>
               )}
 
-              {/* Mobile Quick Zoom Bar */}
-              <div className="sm:hidden absolute bottom-3 right-3 flex items-center bg-neutral-950/90 backdrop-blur-md border border-white/10 rounded-xl p-1 z-20">
+              {/* Status and Hint Overlay */}
+              <div className="absolute top-3 left-3 flex items-center gap-2 pointer-events-none">
+                {zoomLevel > 1 && (
+                  <span className="text-[10px] font-mono font-medium px-2.5 py-1 rounded-lg bg-indigo-950/80 text-indigo-300 border border-indigo-500/30 backdrop-blur-md flex items-center gap-1.5 shadow-md animate-pulse">
+                    <span>Pan Active: Click &amp; drag to navigate</span>
+                  </span>
+                )}
+                {(panPosition.x !== 0 || panPosition.y !== 0 || zoomLevel !== 1) && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleZoomReset();
+                    }}
+                    className="pointer-events-auto text-[10px] font-mono px-2.5 py-1 rounded-lg bg-neutral-900/90 hover:bg-neutral-800 text-gray-300 hover:text-white border border-white/15 backdrop-blur-md cursor-pointer transition-all shadow-md"
+                  >
+                    Reset View
+                  </button>
+                )}
+              </div>
+
+              {/* Quick Controls HUD on Bottom-Right */}
+              <div className="absolute bottom-3 right-3 flex items-center bg-neutral-950/90 backdrop-blur-md border border-white/15 rounded-xl p-1 z-20 shadow-xl gap-0.5">
                 <button
                   type="button"
                   onClick={handleZoomOut}
-                  className="p-1.5 text-gray-300 hover:text-white cursor-pointer"
+                  className="p-1.5 text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+                  title="Zoom Out (-)"
                 >
                   <ZoomOut className="w-3.5 h-3.5" />
                 </button>
-                <span className="px-1.5 text-[10px] font-mono text-gray-300">
+                <button
+                  type="button"
+                  onClick={handleZoomReset}
+                  className="px-2 py-0.5 text-[11px] font-mono font-semibold text-indigo-300 hover:text-white rounded-md hover:bg-white/10 transition-colors cursor-pointer"
+                  title="Reset Zoom / Pan (0 or R)"
+                >
                   {Math.round(zoomLevel * 100)}%
-                </span>
+                </button>
                 <button
                   type="button"
                   onClick={handleZoomIn}
-                  className="p-1.5 text-gray-300 hover:text-white cursor-pointer"
+                  className="p-1.5 text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+                  title="Zoom In (+)"
                 >
                   <ZoomIn className="w-3.5 h-3.5" />
+                </button>
+                <div className="w-[1px] h-4 bg-white/10 mx-0.5" />
+                <button
+                  type="button"
+                  onClick={handleToggleFullscreen}
+                  className="p-1.5 text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+                  title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+                >
+                  {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
                 </button>
               </div>
             </div>

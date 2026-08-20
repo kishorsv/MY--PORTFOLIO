@@ -1,28 +1,28 @@
 import { EducationItem } from '../types';
 
 export const educationData: EducationItem = {
-  degree: "Bachelor of Engineering / Technology (B.E. / B.Tech)",
-  college: "Institution of Engineering & Technology", // Editable placeholder
-  specialization: "Artificial Intelligence & Machine Learning",
-  startYear: "2022",
-  graduationYear: "2026",
-  location: "India",
-  gradeOrGpa: "First Class with Distinction",
+  degree: "Bachelor of Engineering (B.E.)",
+  college: "Mysuru Royal Institute of Technology (MRIT)",
+  specialization: "Artificial Intelligence & Machine Learning / Computer Science",
+  startYear: "2025",
+  graduationYear: "2029",
+  location: "Mysuru, Karnataka, India",
+  gradeOrGpa: "Pursuing (Batch 2025 – 2029)",
   coursework: [
     "Data Structures & Algorithms (DSA)",
-    "Artificial Intelligence & Expert Systems",
-    "Machine Learning & Statistical Pattern Recognition",
+    "Artificial Intelligence & Machine Learning",
     "Deep Neural Networks & Computer Vision",
     "Natural Language Processing & LLMs",
     "Database Management Systems (DBMS) & SQL",
     "Object-Oriented Software Engineering & System Architecture",
     "Cloud Computing & Distributed Systems",
     "Operating Systems & Computer Networks",
-    "Web Technologies & Full-Stack Architecture"
+    "Web Technologies & Full-Stack Architecture",
+    "Engineering Mathematics & Statistical Modeling"
   ],
   highlights: [
-    "Core focus on practical AI system implementations and algorithmic efficiency",
-    "Lead contributor on departmental AI lab projects and hackathon teams",
-    "Active participant in technical symposiums, coding challenges, and open-source seminars"
+    "Undergraduate engineering program at MRIT focusing on core AI systems and software engineering",
+    "Hands-on practical development across full-stack applications, ML pipelines, and algorithmic problem solving",
+    "Active participant in technical symposiums, hackathons, and open-source development"
   ]
 };

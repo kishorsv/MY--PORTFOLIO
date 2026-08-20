@@ -8,6 +8,7 @@ import {
   Sparkles,
   CheckCircle2,
   MapPin,
+  Building2,
 } from 'lucide-react';
 import { SectionHeading } from '../components/SectionHeading';
 import { educationData } from '../data/education';
@@ -19,7 +20,7 @@ export const EducationSection: React.FC = () => {
         <SectionHeading
           badge="Academic Background"
           title="Education & Foundations"
-          subtitle="Formal university education specializing in Artificial Intelligence, Machine Learning, and Computer Science."
+          subtitle="Formal engineering education specializing in Artificial Intelligence, Machine Learning, and Computer Science."
         />
 
         <motion.div
@@ -39,28 +40,37 @@ export const EducationSection: React.FC = () => {
               </div>
 
               <div>
-                <span className="text-xs font-mono font-bold px-3.5 py-1 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 shadow-sm">
+                <span className="text-xs font-mono font-bold px-3.5 py-1 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 shadow-sm inline-flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5" />
                   {educationData.startYear} – {educationData.graduationYear}
                 </span>
+                
                 <h3 className="text-2xl font-bold font-display text-white mt-3">
                   {educationData.degree}
                 </h3>
+                
                 <p className="text-base font-semibold text-indigo-400 mt-1">
                   Specialization: {educationData.specialization}
                 </p>
-                <p className="text-sm text-gray-400 mt-1">
-                  {educationData.college}
-                </p>
-                {educationData.location && (
-                  <p className="text-xs text-gray-500 flex items-center gap-1 mt-1">
-                    <MapPin className="w-3.5 h-3.5" /> {educationData.location}
-                  </p>
-                )}
+
+                <div className="mt-3 p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 flex items-start gap-2.5">
+                  <Building2 className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-bold text-white leading-tight">
+                      {educationData.college}
+                    </p>
+                    {educationData.location && (
+                      <p className="text-xs text-gray-400 flex items-center gap-1 mt-1 font-mono">
+                        <MapPin className="w-3 h-3 text-indigo-400" /> {educationData.location}
+                      </p>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {educationData.gradeOrGpa && (
                 <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 inline-block backdrop-blur-sm">
-                  <span className="text-xs font-mono text-gray-400">Academic Standing: </span>
+                  <span className="text-xs font-mono text-gray-400">Academic Status: </span>
                   <span className="text-xs font-bold text-emerald-400">{educationData.gradeOrGpa}</span>
                 </div>
               )}
