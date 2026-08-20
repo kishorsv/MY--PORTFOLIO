@@ -10,24 +10,26 @@ import { ProjectCategory, ProjectItem } from '../types';
 export const ProjectsSection: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<ProjectCategory>('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [liveOnly, setLiveOnly] = useState(false);
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
 
   const categories: ProjectCategory[] = ['All', 'AI', 'ML', 'Web', 'Full Stack', 'Other'];
 
   const filteredProjects = useMemo(() => {
-    return projectsData.filter((project) => {
+    return (projectsData || []).filter((project) => {
       const matchesCategory = activeCategory === 'All' || project.category === activeCategory;
+      const matchesLive = !liveOnly || Boolean(project.liveUrl);
       const query = searchQuery.toLowerCase().trim();
-      if (!query) return matchesCategory;
+      if (!query) return matchesCategory && matchesLive;
 
       const matchesSearch =
         project.title.toLowerCase().includes(query) ||
         project.description.toLowerCase().includes(query) ||
-        project.tags.some((tag) => tag.toLowerCase().includes(query));
+        (project.tags || []).some((tag) => tag.toLowerCase().includes(query));
 
-      return matchesCategory && matchesSearch;
+      return matchesCategory && matchesLive && matchesSearch;
     });
-  }, [activeCategory, searchQuery]);
+  }, [activeCategory, searchQuery, liveOnly]);
 
   return (
     <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8 bg-neutral-950/90 relative">
@@ -41,10 +43,10 @@ export const ProjectsSection: React.FC = () => {
           subtitle="Explore production-ready AI applications, conversational platforms, and interactive full-stack web experiences."
         />
 
-        {/* Filter Tabs & Search Bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-12 p-2 rounded-2xl md:rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-sm">
+        {/* Filter Tabs, Live Filter & Search Bar */}
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 mb-12 p-2.5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shadow-sm">
           {/* Category Filter Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
+          <div className="flex items-center gap-1.5 overflow-x-auto w-full lg:w-auto pb-2 lg:pb-0 scrollbar-none">
             {categories.map((category) => (
               <button
                 key={category}
@@ -60,16 +62,31 @@ export const ProjectsSection: React.FC = () => {
             ))}
           </div>
 
-          {/* Search Bar */}
-          <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search projects or technologies..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 backdrop-blur-sm transition-colors"
-            />
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5">
+            {/* Live Demo Quick Filter */}
+            <button
+              onClick={() => setLiveOnly((prev) => !prev)}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer border ${
+                liveOnly
+                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
+                  : 'bg-white/5 text-gray-400 hover:text-white border-white/10'
+              }`}
+            >
+              <span className={`w-2 h-2 rounded-full ${liveOnly ? 'bg-emerald-400 animate-pulse' : 'bg-gray-500'}`} />
+              <span>Live Demos Only</span>
+            </button>
+
+            {/* Search Bar */}
+            <div className="relative flex-1 sm:w-72">
+              <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search projects or technologies..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 backdrop-blur-sm transition-colors"
+              />
+            </div>
           </div>
         </div>
 
@@ -81,10 +98,11 @@ export const ProjectsSection: React.FC = () => {
               onClick={() => {
                 setActiveCategory('All');
                 setSearchQuery('');
+                setLiveOnly(false);
               }}
               className="mt-3 text-xs text-indigo-400 hover:underline cursor-pointer font-semibold"
             >
-              Reset filters
+              Reset all filters
             </button>
           </div>
         ) : (
