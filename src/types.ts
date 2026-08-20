@@ -98,14 +98,20 @@ export interface CertificateItem {
   completedDate?: string;
   credentialId: string;
   verificationUrl?: string;
+  credentialUrl?: string;
+  linkedinUrl?: string;
   image: string;
-  category: 'AI & Generative AI' | 'Web Development' | 'Data Science' | 'Data Analysis' | 'GitHub & Development' | 'Achievements';
-  type: 'Professional Certificate' | 'Course Completion Certificate' | 'Training Certificate' | 'Community Achievement / Badge';
+  pdfUrl?: string;
+  category: 'AI & Generative AI' | 'Web Development' | 'Data Science' | 'Data Analysis' | 'GitHub & Development' | 'Achievements' | string;
+  type: 'Professional Certificate' | 'Course Completion Certificate' | 'Training Certificate' | 'Community Achievement / Badge' | string;
   skills: string[];
+  description?: string;
   verified: boolean;
+  featured?: boolean;
   issuerLogo?: string;
   accentColor?: string;
   recognition?: string;
+  createdAt?: string;
 }
 
 export interface GithubRepoItem {

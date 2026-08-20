@@ -1,8 +1,8 @@
 import { CertificateItem } from '../types';
 
-export const certificationsData: CertificateItem[] = [
+export const initialCertificationsData: CertificateItem[] = [
   {
-    id: "cert-github-career-essentials",
+    id: "github-professional",
     title: "Career Essentials in GitHub Professional Certificate",
     issuer: "LinkedIn Learning + GitHub",
     issueDate: "February 4, 2026",
@@ -10,13 +10,16 @@ export const certificationsData: CertificateItem[] = [
     credentialId: "Not provided",
     category: "GitHub & Development",
     type: "Professional Certificate",
-    skills: ["GitHub", "Version Control", "Collaboration", "Development Workflows"],
+    skills: ["GitHub", "Version Control", "Collaboration", "Development Workflows", "Git Workflows", "Branch Management"],
+    description: "Comprehensive professional credential covering collaborative version control, automated development workflows, branch lifecycle management, and repository governance using GitHub.",
     verified: true,
+    featured: true,
     accentColor: "#2ea44f",
-    image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?q=80&w=800&auto=format&fit=crop"
+    image: "/certificates/github-professional.svg",
+    createdAt: "2026-02-04"
   },
   {
-    id: "cert-claude-101",
+    id: "claude-101",
     title: "Claude 101",
     issuer: "Anthropic",
     issueDate: "April 2026",
@@ -24,13 +27,16 @@ export const certificationsData: CertificateItem[] = [
     credentialId: "Not provided",
     category: "AI & Generative AI",
     type: "Training Certificate",
-    skills: ["Generative AI", "Claude", "AI Fundamentals"],
+    skills: ["Generative AI", "Claude", "AI Fundamentals", "Prompt Engineering", "LLM Capabilities"],
+    description: "Foundational training in Anthropic's Claude model family, foundational LLM architecture, prompt engineering techniques, and state-of-the-art generative AI systems.",
     verified: true,
+    featured: true,
     accentColor: "#d97706",
-    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=800&auto=format&fit=crop"
+    image: "/certificates/claude-101.svg",
+    createdAt: "2026-04-01"
   },
   {
-    id: "cert-claude-code-101",
+    id: "claude-code-101",
     title: "Claude Code 101",
     issuer: "Anthropic",
     issueDate: "April 2026",
@@ -38,13 +44,16 @@ export const certificationsData: CertificateItem[] = [
     credentialId: "Not provided",
     category: "AI & Generative AI",
     type: "Training Certificate",
-    skills: ["AI-Powered Coding", "Claude Code", "Developer Productivity"],
+    skills: ["AI-Powered Coding", "Claude Code", "Developer Productivity", "Automated Refactoring", "Agentic Workflows"],
+    description: "Advanced training in leveraging Claude Code CLI and agentic programming tools for automated codebase refactoring, terminal scripting, and developer productivity acceleration.",
     verified: true,
+    featured: true,
     accentColor: "#f59e0b",
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop"
+    image: "/certificates/claude-code-101.svg",
+    createdAt: "2026-04-10"
   },
   {
-    id: "cert-intro-claude-cowork",
+    id: "claude-cowork",
     title: "Introduction to Claude Cowork",
     issuer: "Anthropic",
     issueDate: "April 22, 2026",
@@ -52,13 +61,16 @@ export const certificationsData: CertificateItem[] = [
     credentialId: "Not provided",
     category: "AI & Generative AI",
     type: "Training Certificate",
-    skills: ["Claude Cowork", "AI Productivity", "Generative AI"],
+    skills: ["Claude Cowork", "AI Productivity", "Generative AI", "Real-time Collaboration", "Workflow Automation"],
+    description: "Applied coursework in collaborative AI frameworks, interactive workspace co-working, and automated enterprise productivity using Claude AI systems.",
     verified: true,
+    featured: true,
     accentColor: "#b45309",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=800&auto=format&fit=crop"
+    image: "/certificates/claude-cowork.svg",
+    createdAt: "2026-04-22"
   },
   {
-    id: "cert-kaggle-community-member",
+    id: "kaggle-community",
     title: "Kaggle Community Member",
     issuer: "Kaggle",
     issueDate: "May 15, 2020",
@@ -67,13 +79,16 @@ export const certificationsData: CertificateItem[] = [
     category: "Data Science",
     type: "Community Achievement / Badge",
     recognition: "Kaggle Community Member",
-    skills: ["Data Science & ML Community", "Kaggle Competitions", "Python", "Open Data Exploration"],
+    skills: ["Data Science & ML Community", "Kaggle Competitions", "Python Pipelines", "Open Data Exploration"],
+    description: "Official community recognition and badge for active participation in machine learning competitions, open data analysis, notebook development, and community data science sharing.",
     verified: true,
+    featured: false,
     accentColor: "#20beff",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop"
+    image: "/certificates/kaggle-community.svg",
+    createdAt: "2020-05-15"
   },
   {
-    id: "cert-nxtwave-static-website",
+    id: "nxtwave-static-website",
     title: "Build Your Own Static Website",
     issuer: "NxtWave / CCBP 4.0 Academy",
     issueDate: "August 4, 2026",
@@ -81,13 +96,16 @@ export const certificationsData: CertificateItem[] = [
     credentialId: "Not provided",
     category: "Web Development",
     type: "Course Completion Certificate",
-    skills: ["HTML", "CSS", "Bootstrap"],
+    skills: ["HTML", "CSS", "Bootstrap", "Responsive Layouts"],
+    description: "Hands-on certification verifying end-to-end building and deployment of static websites utilizing semantic HTML5, CSS3, and Bootstrap UI component systems.",
     verified: true,
+    featured: true,
     accentColor: "#0284c7",
-    image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=800&auto=format&fit=crop"
+    image: "/certificates/nxtwave-static-website.svg",
+    createdAt: "2026-08-04"
   },
   {
-    id: "cert-nxtwave-responsive-website",
+    id: "nxtwave-responsive-website",
     title: "Build Your Own Responsive Website",
     issuer: "NxtWave / CCBP 4.0 Academy",
     issueDate: "August 5, 2026",
@@ -95,13 +113,16 @@ export const certificationsData: CertificateItem[] = [
     credentialId: "Not provided",
     category: "Web Development",
     type: "Course Completion Certificate",
-    skills: ["Bootstrap", "Flexbox", "Responsive Web Design"],
+    skills: ["Bootstrap", "Flexbox", "Responsive Web Design", "Media Queries"],
+    description: "Specialized certification in engineering responsive, multi-breakpoint web interfaces using Bootstrap 12-column grid system, CSS Flexbox, and mobile-first architectural principles.",
     verified: true,
+    featured: true,
     accentColor: "#2563eb",
-    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop"
+    image: "/certificates/nxtwave-responsive-website.svg",
+    createdAt: "2026-08-05"
   },
   {
-    id: "cert-ms-linkedin-data-analysis",
+    id: "microsoft-data-analysis",
     title: "Career Essentials in Data Analysis by Microsoft and LinkedIn",
     issuer: "Microsoft + LinkedIn",
     issueDate: "February 2026",
@@ -109,19 +130,41 @@ export const certificationsData: CertificateItem[] = [
     credentialId: "Not provided",
     category: "Data Analysis",
     type: "Professional Certificate",
-    skills: ["Data Analysis", "Microsoft Tools", "Data Literacy"],
+    skills: ["Data Analysis", "Microsoft Tools", "Data Literacy", "Statistical Reasoning", "Data Visualizations"],
+    description: "Industry-standard career essentials professional certificate validating data literacy, analytical data modeling, business intelligence interpretation, and spreadsheet analytics.",
     verified: true,
+    featured: true,
     accentColor: "#00a4ef",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop"
+    image: "/certificates/microsoft-data-analysis.svg",
+    createdAt: "2026-02-01"
   }
 ];
 
-export const certificationSummaryStats = {
-  totalCount: 8,
-  anthropicCount: 3,
-  nxtwaveCount: 2,
-  githubCount: 1,
-  microsoftCount: 1,
-  kaggleCount: 1,
+export const CERTIFICATIONS_STORAGE_KEY = 'kishor_portfolio_certifications_v1';
+
+export const loadStoredCertifications = (): CertificateItem[] => {
+  try {
+    const saved = localStorage.getItem(CERTIFICATIONS_STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.error('Error loading stored certifications:', e);
+  }
+  return initialCertificationsData;
 };
+
+export const saveStoredCertifications = (certs: CertificateItem[]): void => {
+  try {
+    localStorage.setItem(CERTIFICATIONS_STORAGE_KEY, JSON.stringify(certs));
+  } catch (e) {
+    console.error('Error saving certifications:', e);
+  }
+};
+
+export const certificationsData = initialCertificationsData;
+
 

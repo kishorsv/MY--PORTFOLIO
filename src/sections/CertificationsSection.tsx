@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Search,
@@ -11,18 +11,34 @@ import {
   Database,
   Filter,
   CheckCircle2,
-  FileBadge
+  FileBadge,
+  Plus,
+  Settings,
+  ShieldCheck
 } from 'lucide-react';
 import { SectionHeading } from '../components/SectionHeading';
 import { CertificateCard } from '../components/CertificateCard';
 import { CertificateModal } from '../components/CertificateModal';
-import { certificationsData, certificationSummaryStats } from '../data/certifications';
+import { AdminCertificateModal } from '../components/AdminCertificateModal';
+import {
+  loadStoredCertifications,
+  saveStoredCertifications
+} from '../data/certifications';
 import { CertificateItem } from '../types';
 
 export const CertificationsSection: React.FC = () => {
+  const [certifications, setCertifications] = useState<CertificateItem[]>(() =>
+    loadStoredCertifications()
+  );
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+
+  const handleSaveCertificates = (updated: CertificateItem[]) => {
+    setCertifications(updated);
+    saveStoredCertifications(updated);
+  };
 
   const categories = [
     'All',
@@ -34,8 +50,20 @@ export const CertificationsSection: React.FC = () => {
     'Achievements'
   ];
 
+  // Dynamic statistics
+  const stats = useMemo(() => {
+    return {
+      totalCount: certifications.length,
+      anthropicCount: certifications.filter((c) => c.issuer.includes('Anthropic')).length,
+      nxtwaveCount: certifications.filter((c) => c.issuer.includes('NxtWave')).length,
+      githubCount: certifications.filter((c) => c.issuer.includes('GitHub')).length,
+      microsoftCount: certifications.filter((c) => c.issuer.includes('Microsoft')).length,
+      kaggleCount: certifications.filter((c) => c.issuer.includes('Kaggle')).length
+    };
+  }, [certifications]);
+
   const filteredCerts = useMemo(() => {
-    return certificationsData.filter((cert) => {
+    return certifications.filter((cert) => {
       let matchesCategory = false;
       if (activeCategory === 'All') {
         matchesCategory = true;
@@ -57,7 +85,7 @@ export const CertificationsSection: React.FC = () => {
 
       return matchesCategory && matchesSearch;
     });
-  }, [activeCategory, searchQuery]);
+  }, [certifications, activeCategory, searchQuery]);
 
   return (
     <section id="certifications" className="py-24 px-4 sm:px-6 lg:px-8 bg-neutral-950 relative">
@@ -65,7 +93,7 @@ export const CertificationsSection: React.FC = () => {
         <SectionHeading
           badge="Certifications & Achievements"
           title="Certifications & Achievements"
-          subtitle="Professional certificates, course completions, and community recognitions across Generative AI, Full-Stack Web Development, Version Control, and Data Analytics."
+          subtitle="Interactive LinkedIn-style credentials viewer. Click any certification to inspect the verified credential document, issuing authority, and curriculum competencies."
         />
 
         {/* Top Summary Dashboard Banner */}
@@ -77,18 +105,24 @@ export const CertificationsSection: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl sm:text-2xl font-extrabold text-white font-display">
-                  {certificationSummaryStats.totalCount} Total Credentials & Achievements
+                  {stats.totalCount} Total Credentials & Achievements
                 </h3>
-                <p className="text-xs font-mono text-gray-400 mt-0.5">
-                  Confirmed profile credentials & milestones
+                <p className="text-xs font-mono text-emerald-400 mt-0.5 flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  All 8 credentials connected to high-resolution certificate documents
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono px-3.5 py-1.5 rounded-full bg-white/5 text-gray-300 border border-white/10">
-                Portfolio Credentials
-              </span>
+              <button
+                type="button"
+                onClick={() => setIsAdminOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/10 hover:bg-indigo-600 text-white text-xs font-semibold border border-white/10 hover:border-indigo-500 transition-all cursor-pointer shadow-sm"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add / Manage Certificates</span>
+              </button>
             </div>
           </div>
 
@@ -97,7 +131,7 @@ export const CertificationsSection: React.FC = () => {
             <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-amber-500/30 transition-all group">
               <div className="flex items-center gap-2 text-amber-400">
                 <Bot className="w-4 h-4" />
-                <span className="text-lg font-bold font-display text-white">{certificationSummaryStats.anthropicCount}</span>
+                <span className="text-lg font-bold font-display text-white">{stats.anthropicCount}</span>
               </div>
               <p className="text-[11px] font-mono text-gray-400 mt-1">Anthropic AI Certificates</p>
             </div>
@@ -105,7 +139,7 @@ export const CertificationsSection: React.FC = () => {
             <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-sky-500/30 transition-all group">
               <div className="flex items-center gap-2 text-sky-400">
                 <Globe className="w-4 h-4" />
-                <span className="text-lg font-bold font-display text-white">{certificationSummaryStats.nxtwaveCount}</span>
+                <span className="text-lg font-bold font-display text-white">{stats.nxtwaveCount}</span>
               </div>
               <p className="text-[11px] font-mono text-gray-400 mt-1">NxtWave Web Certificates</p>
             </div>
@@ -113,7 +147,7 @@ export const CertificationsSection: React.FC = () => {
             <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-emerald-500/30 transition-all group">
               <div className="flex items-center gap-2 text-emerald-400">
                 <Terminal className="w-4 h-4" />
-                <span className="text-lg font-bold font-display text-white">{certificationSummaryStats.githubCount}</span>
+                <span className="text-lg font-bold font-display text-white">{stats.githubCount}</span>
               </div>
               <p className="text-[11px] font-mono text-gray-400 mt-1">GitHub Professional Cert</p>
             </div>
@@ -121,7 +155,7 @@ export const CertificationsSection: React.FC = () => {
             <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-blue-500/30 transition-all group">
               <div className="flex items-center gap-2 text-blue-400">
                 <BarChart3 className="w-4 h-4" />
-                <span className="text-lg font-bold font-display text-white">{certificationSummaryStats.microsoftCount}</span>
+                <span className="text-lg font-bold font-display text-white">{stats.microsoftCount}</span>
               </div>
               <p className="text-[11px] font-mono text-gray-400 mt-1">Microsoft + LinkedIn Cert</p>
             </div>
@@ -129,7 +163,7 @@ export const CertificationsSection: React.FC = () => {
             <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-cyan-500/30 transition-all group col-span-2 sm:col-span-1">
               <div className="flex items-center gap-2 text-cyan-400">
                 <Database className="w-4 h-4" />
-                <span className="text-lg font-bold font-display text-white">{certificationSummaryStats.kaggleCount}</span>
+                <span className="text-lg font-bold font-display text-white">{stats.kaggleCount}</span>
               </div>
               <p className="text-[11px] font-mono text-gray-400 mt-1">Kaggle Community Badge</p>
             </div>
@@ -192,9 +226,18 @@ export const CertificationsSection: React.FC = () => {
       {/* Interactive Document Modal */}
       <CertificateModal
         cert={selectedCert}
+        certificatesList={filteredCerts}
         onClose={() => setSelectedCert(null)}
+        onNavigate={(c) => setSelectedCert(c)}
+      />
+
+      {/* Admin / Edit Certificate Modal */}
+      <AdminCertificateModal
+        isOpen={isAdminOpen}
+        onClose={() => setIsAdminOpen(false)}
+        onSave={handleSaveCertificates}
+        currentCertificates={certifications}
       />
     </section>
   );
 };
-
