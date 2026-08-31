@@ -102,7 +102,10 @@ export function App() {
       </main>
 
       {/* Footer */}
-      <Footer onOpenAiChat={() => setIsAiChatOpen(true)} />
+      <Footer
+        onOpenAiChat={() => setIsAiChatOpen(true)}
+        onNotify={showToast}
+      />
 
       {/* Interactive Modals and Drawers */}
       <ResumeModal

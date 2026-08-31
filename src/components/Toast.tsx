@@ -17,6 +17,15 @@ export const Toast: React.FC<ToastProps> = ({
   type = 'info',
   onClose,
 }) => {
+  React.useEffect(() => {
+    if (isVisible) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, onClose, title, description]);
+
   if (!isVisible) return null;
 
   return (

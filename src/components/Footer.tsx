@@ -9,16 +9,80 @@ import {
   Heart,
   Terminal,
   Sparkles,
+  Share2,
 } from 'lucide-react';
 import { profileData } from '../data/profile';
 
 interface FooterProps {
   onOpenAiChat: () => void;
+  onNotify?: (title: string, description?: string, type?: 'success' | 'error' | 'info') => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenAiChat }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenAiChat, onNotify }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSharePortfolio = async () => {
+    const portfolioUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kishor-portfolio.dev';
+    const shareData = {
+      title: `${profileData.name} - AI/ML Engineer & Full-Stack Developer`,
+      text: `Check out ${profileData.name}'s portfolio showcasing AI/ML and Full-Stack Engineering projects!`,
+      url: portfolioUrl,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        onNotify?.(
+          'Portfolio Shared Successfully!',
+          'Thank you for sharing my portfolio with your network.',
+          'success'
+        );
+      } catch (err: any) {
+        // Only ignore user cancellation (AbortError); otherwise attempt clipboard fallback
+        if (err.name !== 'AbortError') {
+          await fallbackClipboardCopy(portfolioUrl);
+        }
+      }
+    } else {
+      await fallbackClipboardCopy(portfolioUrl);
+    }
+  };
+
+  const fallbackClipboardCopy = async (url: string) => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(url);
+        onNotify?.(
+          'Portfolio Link Copied!',
+          'The link has been copied to your clipboard.',
+          'success'
+        );
+      } else {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        onNotify?.(
+          'Portfolio Link Copied!',
+          'The link has been copied to your clipboard.',
+          'success'
+        );
+      }
+    } catch {
+      onNotify?.(
+        'Portfolio Link',
+        url,
+        'info'
+      );
+    }
   };
 
   return (
@@ -46,17 +110,35 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAiChat }) => {
           </div>
 
           {/* Quick interactive links & social cluster */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
-            <button
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 flex-wrap">
+            {/* Share Portfolio Button */}
+            <motion.button
+              id="footer-share-portfolio-btn"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleSharePortfolio}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-semibold backdrop-blur-sm transition-all shadow-md shadow-cyan-500/5 hover:border-cyan-400/60 cursor-pointer"
+              aria-label="Share Portfolio"
+            >
+              <Share2 className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Share Portfolio</span>
+            </motion.button>
+
+            {/* Ask AI Assistant Button */}
+            <motion.button
+              id="footer-ask-ai-btn"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={onOpenAiChat}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 hover:bg-white/10 text-indigo-300 border border-indigo-500/30 text-xs font-semibold backdrop-blur-sm transition-all shadow-md shadow-indigo-600/10 cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 text-indigo-300 border border-indigo-500/30 text-xs font-semibold backdrop-blur-sm transition-all shadow-md shadow-indigo-600/10 hover:border-indigo-400/60 cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-indigo-400 animate-pulse" />
               <span>Ask AI About Kishor</span>
-            </button>
+            </motion.button>
 
             <div className="flex items-center gap-2.5">
               <a
+                id="footer-github-link"
                 href={profileData.socials.github}
                 target="_blank"
                 rel="noreferrer"
@@ -66,6 +148,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAiChat }) => {
                 <Github className="w-4 h-4" />
               </a>
               <a
+                id="footer-linkedin-link"
                 href={profileData.socials.linkedin}
                 target="_blank"
                 rel="noreferrer"
@@ -75,6 +158,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAiChat }) => {
                 <Linkedin className="w-4 h-4" />
               </a>
               <a
+                id="footer-twitter-link"
                 href={profileData.socials.twitter}
                 target="_blank"
                 rel="noreferrer"
@@ -84,6 +168,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAiChat }) => {
                 <Twitter className="w-4 h-4" />
               </a>
               <a
+                id="footer-email-link"
                 href={`mailto:${profileData.socials.email}`}
                 className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 backdrop-blur-sm transition-colors cursor-pointer"
                 aria-label="Send Email"
