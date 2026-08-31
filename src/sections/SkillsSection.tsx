@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
-import { Search, Filter, Cpu } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { SectionHeading } from '../components/SectionHeading';
 import { SkillCard } from '../components/SkillCard';
 import { skillCategories } from '../data/skills';

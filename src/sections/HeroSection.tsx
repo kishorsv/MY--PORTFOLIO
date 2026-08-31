@@ -32,24 +32,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const portraitAnchorRef = useRef<HTMLDivElement>(null);
   const radialGlowRef = useRef<HTMLDivElement>(null);
 
-  // Motion values for hardware-accelerated spring-based cursor tracking without React re-renders
+  // Motion values for hardware-accelerated spring-based cursor tracking
   const rawMouseX = useMotionValue(0);
   const rawMouseY = useMotionValue(0);
 
-  // Optimized spring physics (critically damped for silky response and low CPU overhead)
   const springConfig = { stiffness: 120, damping: 24, mass: 0.5 };
   const smoothMouseX = useSpring(rawMouseX, springConfig);
   const smoothMouseY = useSpring(rawMouseY, springConfig);
 
   // Direct GPU transforms for backlight shift behind portrait
-  const backlightX = useTransform(smoothMouseX, [-600, 600], [-70, 70]);
-  const backlightY = useTransform(smoothMouseY, [-600, 600], [-60, 60]);
-  const backlightScale = useTransform(smoothMouseX, [-600, 0, 600], [1.12, 1.0, 1.15]);
-  const backlightRotate = useTransform(smoothMouseX, [-600, 600], [-20, 20]);
-
-  // Directional specular rim flare
-  const rimGlowX = useTransform(smoothMouseX, [-600, 600], [-95, 95]);
-  const rimGlowY = useTransform(smoothMouseY, [-600, 600], [-80, 80]);
+  const backlightX = useTransform(smoothMouseX, [-600, 600], [-50, 50]);
+  const backlightY = useTransform(smoothMouseY, [-600, 600], [-40, 40]);
+  const backlightScale = useTransform(smoothMouseX, [-600, 0, 600], [1.08, 1.0, 1.1]);
 
   useEffect(() => {
     let rafId: number | null = null;
@@ -58,7 +52,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     let lastY = 0;
     let isDirty = false;
 
-    // IntersectionObserver to completely halt mouse updates when Hero is scrolled out of view (saves battery)
     const observer = new IntersectionObserver(
       ([entry]) => {
         isHeroVisible = entry.isIntersecting;
@@ -120,14 +113,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     <section
       id="hero"
       ref={heroRef}
-      className="relative min-h-[90vh] flex items-center justify-center pt-28 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-transparent transform-gpu"
+      className="relative min-h-[88vh] flex items-center justify-center pt-28 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-transparent"
     >
-      {/* Hardware-accelerated dynamic radial ambient glow (Zero React re-renders) */}
+      {/* Hardware-accelerated dynamic radial ambient glow */}
       <div
         ref={radialGlowRef}
-        className="pointer-events-none absolute -inset-px opacity-35 transition-opacity duration-300 hidden md:block will-change-[background] transform-gpu"
+        className="pointer-events-none absolute -inset-px opacity-30 transition-opacity duration-300 hidden md:block will-change-[background]"
         style={{
-          background: `radial-gradient(750px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99, 102, 241, 0.14), rgba(168, 85, 247, 0.04) 45%, transparent 75%)`,
+          background: `radial-gradient(700px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99, 102, 241, 0.12), rgba(6, 182, 212, 0.04) 45%, transparent 75%)`,
         }}
       />
 
@@ -139,20 +132,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           transition={{ duration: 0.6 }}
           className="bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-10 md:p-14 backdrop-blur-md relative overflow-hidden shadow-2xl"
         >
-          {/* Subtle Decorative Geometric Grid overlay */}
-          <div className="absolute right-0 top-0 w-80 h-full bg-gradient-to-l from-indigo-500/5 to-transparent flex items-center justify-center pointer-events-none opacity-20 hidden lg:flex">
-            <div className="grid grid-cols-4 gap-2">
-              <div className="w-10 h-10 border border-white/20 rounded-lg"></div>
-              <div className="w-10 h-10 border border-white/20 rounded-lg bg-white/10"></div>
-              <div className="w-10 h-10 border border-white/20 rounded-lg"></div>
-              <div className="w-10 h-10 border border-white/20 rounded-lg"></div>
-              <div className="w-10 h-10 border border-white/20 rounded-lg bg-white/10"></div>
-              <div className="w-10 h-10 border border-white/20 rounded-lg"></div>
-              <div className="w-10 h-10 border border-white/20 rounded-lg bg-white/10"></div>
-              <div className="w-10 h-10 border border-white/20 rounded-lg"></div>
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Content Column */}
             <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
@@ -167,7 +146,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
-                <span>AI/ML Engineer & Full-Stack</span>
+                <span>AI/ML Engineer &amp; Full-Stack</span>
               </motion.div>
 
               {/* Main Title */}
@@ -199,23 +178,23 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               >
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 backdrop-blur-sm shadow-sm">
                   <Brain className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>Generative AI & LLMs</span>
+                  <span>Generative AI &amp; LLMs</span>
                 </div>
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 backdrop-blur-sm shadow-sm">
                   <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>React & TypeScript</span>
+                  <span>React &amp; TypeScript</span>
                 </div>
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 backdrop-blur-sm shadow-sm">
                   <Terminal className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Python & PyTorch</span>
+                  <span>Python &amp; PyTorch</span>
                 </div>
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 backdrop-blur-sm shadow-sm">
                   <Layers className="w-3.5 h-3.5 text-purple-400" />
-                  <span>Node.js & FastAPI</span>
+                  <span>Node.js &amp; FastAPI</span>
                 </div>
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 backdrop-blur-sm shadow-sm">
                   <Database className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Vector DB & Cloud</span>
+                  <span>Vector DB &amp; SQL</span>
                 </div>
               </motion.div>
 
@@ -302,54 +281,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </motion.div>
             </div>
 
-            {/* Right Column: 3D Motion Professional Profile with Mouse-Reactive Backlight */}
+            {/* Right Column: Profile Portrait */}
             <div
               ref={portraitAnchorRef}
               className="lg:col-span-5 flex justify-center items-center mt-6 lg:mt-0 relative"
             >
-              {/* ======================================================== */}
-              {/* 🌟 MOUSE-REACTIVE AMBIENT GLOW BACKLIGHT ENGINE 🌟 */}
-              {/* ======================================================== */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10 overflow-visible transform-gpu">
-                {/* 1. Primary Dynamic Volumetric Light Source (Follows cursor behind the portrait) */}
+              {/* Backlight glow */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10 overflow-visible">
                 <motion.div
                   style={{
                     x: backlightX,
                     y: backlightY,
                     scale: backlightScale,
-                    rotate: backlightRotate,
                   }}
-                  className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full blur-[70px] opacity-75 sm:opacity-85 mix-blend-screen will-change-transform transform-gpu"
+                  className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full blur-[65px] opacity-70 mix-blend-screen"
                 >
-                  <div className="w-full h-full rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-cyan-400 opacity-90 animate-pulse transform-gpu" />
+                  <div className="w-full h-full rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-cyan-400 opacity-80" />
                 </motion.div>
-
-                {/* 2. Secondary High-Intensity Directional Rim Light Source */}
-                <motion.div
-                  style={{
-                    x: rimGlowX,
-                    y: rimGlowY,
-                  }}
-                  className="absolute w-56 h-56 sm:w-72 sm:h-72 rounded-full blur-[50px] opacity-60 sm:opacity-70 mix-blend-color-dodge pointer-events-none will-change-transform transform-gpu"
-                >
-                  <div className="w-full h-full rounded-full bg-radial from-cyan-300 via-indigo-500/40 to-transparent transform-gpu" />
-                </motion.div>
-
-                {/* 3. Deep Atmospheric Ambient Base Glow (Cybernetic aura anchor) */}
-                <div className="absolute -inset-12 bg-gradient-to-tr from-indigo-900/40 via-purple-900/30 to-cyan-900/30 rounded-full blur-3xl opacity-80 pointer-events-none transform-gpu" />
-
-                {/* 4. Subtle Shimmering Outer Ring Beam */}
-                <motion.div
-                  animate={{
-                    rotate: [0, 360],
-                    scale: [0.98, 1.04, 0.98],
-                  }}
-                  transition={{
-                    rotate: { duration: 24, repeat: Infinity, ease: 'linear' },
-                    scale: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
-                  }}
-                  className="absolute w-80 h-80 sm:w-[420px] sm:h-[420px] rounded-full border border-indigo-500/20 blur-xl pointer-events-none opacity-40 will-change-transform transform-gpu"
-                />
+                <div className="absolute -inset-10 bg-gradient-to-tr from-indigo-900/40 via-purple-900/30 to-cyan-900/30 rounded-full blur-3xl opacity-70" />
               </div>
 
               {/* Main Visual Display - Profile Portrait */}
@@ -368,5 +317,3 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     </section>
   );
 };
-
-

@@ -6,9 +6,6 @@ import {
   FileText,
   Sparkles,
   Search,
-  Sun,
-  Moon,
-  Terminal,
 } from 'lucide-react';
 import { profileData } from '../data/profile';
 import { useProfilePhoto } from '../utils/photoManager';
