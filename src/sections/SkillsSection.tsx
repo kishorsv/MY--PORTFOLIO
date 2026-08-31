@@ -77,13 +77,17 @@ export const SkillsSection: React.FC = () => {
 
         {/* Skills Cards Grid */}
         {filteredCategories.length === 0 ? (
-          <div className="text-center py-16 text-gray-400 text-sm bg-white/5 rounded-3xl border border-white/10 backdrop-blur-md">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-16 text-gray-400 text-sm bg-white/5 rounded-3xl border border-white/10 backdrop-blur-md"
+          >
             No matching skills found for "{searchQuery}".
-          </div>
+          </motion.div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCategories.map((category) => (
-              <SkillCard key={category.id} category={category} />
+            {filteredCategories.map((category, idx) => (
+              <SkillCard key={category.id} category={category} index={idx} />
             ))}
           </div>
         )}
